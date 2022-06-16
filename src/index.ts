@@ -30,7 +30,7 @@ function joinCall(roomURL: string) {
     activeSpeakerMode: false,
     layoutConfig: {
       grid: {
-        maxTilesPerPage: 1,
+        maxTilesPerPage: 2,
       },
     },
     iframeStyle: {
