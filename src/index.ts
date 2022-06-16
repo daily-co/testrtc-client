@@ -17,7 +17,11 @@ function getContainer(): HTMLDivElement {
 function updateJoinedElement(isVisible: boolean) {
   const inCall = document.getElementById('inCall');
   const c = 'hidden';
-  isVisible ? inCall.classList.remove(c) : inCall.classList.add(c);
+  if (isVisible) {
+    inCall.classList.remove(c);
+    return;
+  }
+  inCall.classList.add(c);
 }
 
 // Join the video call
