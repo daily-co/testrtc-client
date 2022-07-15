@@ -1,0 +1,5 @@
+[build]
+
+command = "npm install && npm run build && npm start"
+publish = "dist/"
+environment = {NODE_VERSION = "16.16.0" }

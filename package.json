@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A client embedding Daily Prebuilt, optimized for TestRTC tests",
   "scripts": {
-    "build": "webpack",
+    "build": "webpack --mode=production",
     "start": "http-server ./dist/ -c-1",
     "check": "eslint src/",
     "fix": "eslint src/ --fix"
