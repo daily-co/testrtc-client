@@ -4,7 +4,9 @@
   "description": "A client embedding Daily Prebuilt, optimized for TestRTC tests",
   "scripts": {
     "build": "webpack --mode=production",
-    "start": "http-server ./dist/ -c-1",
+    "dev": "source .env && npm run netlify-config-redirect && npm run build && netlify dev",
+    "netlify-build": "npm run netlify-config-redirect && npm run build",
+    "netlify-config-redirect": "sed -i.bak s/DAILY_API_KEY_PLACEHOLDER/${DAILY_API_KEY}/g netlify.toml",
     "check": "eslint src/",
     "fix": "eslint src/ --fix"
   },

@@ -9,6 +9,7 @@ import './assets/daily.svg';
 import './assets/favicon.ico';
 import './assets/github.png';
 import './assets/new-tab-icon.png';
+import createRoom from './create';
 
 function getContainer(): HTMLDivElement {
   return <HTMLDivElement>document.getElementById('container');
@@ -68,9 +69,16 @@ window.addEventListener('DOMContentLoaded', () => {
   const params = Object.fromEntries(usp.entries());
 
   if (!params.roomURL) {
-    const c = getContainer();
-    c.innerText = 'room URL not provided';
+    // If room URL is not provided, create a room
+    createRoom(params.roomParams)
+      .then((url) => {
+        joinCall(url);
+      })
+      .catch((e) => {
+        throw new Error(`failed to create a Daily room for the test: ${e}`);
+      });
     return;
   }
+  // If room URL is provided, join given room
   joinCall(params.roomURL);
 });
