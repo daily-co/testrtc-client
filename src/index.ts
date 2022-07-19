@@ -15,13 +15,15 @@ function getContainer(): HTMLDivElement {
   return <HTMLDivElement>document.getElementById('container');
 }
 
-function updateJoinedElement(isVisible: boolean) {
+function updateJoinedElement(roomURL: string = null) {
   const inCall = document.getElementById('inCall');
   const c = 'hidden';
-  if (isVisible) {
+  if (roomURL) {
+    inCall.innerText = roomURL;
     inCall.classList.remove(c);
     return;
   }
+  inCall.innerText = '';
   inCall.classList.add(c);
 }
 
@@ -49,10 +51,10 @@ function joinCall(roomURL: string) {
   // when we're in from TestRTC
   callFrame
     .on('joined-meeting', () => {
-      updateJoinedElement(true);
+      updateJoinedElement(roomURL);
     })
     .on('left-meeting', () => {
-      updateJoinedElement(false);
+      updateJoinedElement();
     });
 
   // Join!
