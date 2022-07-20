@@ -15,7 +15,7 @@
   from = "/api/rooms"
   to = "https://api.daily.co/v1/rooms"
   force = true
-  # If you run the application locally via `npm run dev`, the following will be replaced
-  # with the API key from your .env file. 
+  # If you run the application locally via `npm run dev`, 
+  # the following will be replaced with the API key from your .env file. 
   # DO NOT COMMIT THIS CHANGE.
   headers = { Authorization = "Bearer DAILY_API_KEY_PLACEHOLDER" }
