@@ -1,8 +1,37 @@
 export default async function createRoom(roomProps: string): Promise<string> {
   const url = `/api/rooms/`;
 
+  const req = buildProps(roomProps);
+  try {
+    const res = await fetch(url, req);
+    const resBody = await res.json();
+    const roomURL = resBody.url;
+    return roomURL;
+  } catch (error) {
+    throw new Error(`failed to create room: ${error}`);
+  }
+}
+
+// buildProps takes default properties supplied by user
+// and
+function buildProps(roomProps: string) {
   const defaultExp = Math.floor(Date.now() / 1000) + 60 * 60; // default to 1 hour
-  const reqBody = JSON.parse(roomProps ?? '{}');
+
+  let properties;
+  try {
+    properties = JSON.parse(roomProps ?? null);
+  } catch (e) {
+    if (roomProps) {
+      throw new Error(
+        `failed to parse supplied room creation properties. Did you supply valid JSON?: ${e}`
+      );
+    }
+    throw e;
+  }
+
+  const reqBody = {
+    properties,
+  };
 
   // If no properties are included by original caller,
   // make a new properties object
@@ -28,13 +57,5 @@ export default async function createRoom(roomProps: string): Promise<string> {
     method: 'POST',
     body: data,
   };
-
-  try {
-    const res = await fetch(url, req);
-    const resBody = await res.json();
-    const roomURL = resBody.url;
-    return roomURL;
-  } catch (error) {
-    throw new Error(`failed to create room: ${error}`);
-  }
+  return req;
 }
