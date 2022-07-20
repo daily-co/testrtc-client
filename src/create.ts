@@ -1,6 +1,6 @@
 // buildProps takes default properties supplied by user
 // and
-function buildProps(roomProps: string) {
+function buildRequest(roomProps: string): RequestInit {
   const defaultExp = Math.floor(Date.now() / 1000) + 60 * 60; // default to 1 hour
 
   let properties;
@@ -46,18 +46,19 @@ function buildProps(roomProps: string) {
   return req;
 }
 
-export default async function createRoom(roomProps: string): Promise<string> {
+export async function createRoom(roomProps: string): Promise<string> {
   const url = `/api/rooms/`;
 
-  const req = buildProps(roomProps);
-  console.log('performing req:', url, req);
+  const req = buildRequest(roomProps);
   const errMsg = 'failed to create room';
   try {
     const res = await fetch(url, req);
     const resBody = await res.json();
     if (res.status !== 200) {
       throw new Error(
-        `${errMsg}; unexpected status: ${res.status}; ${JSON.stringify(resBody)}`
+        `${errMsg}; unexpected status: ${res.status}; ${JSON.stringify(
+          resBody
+        )}`
       );
     }
     const roomURL = resBody.url;
@@ -66,3 +67,14 @@ export default async function createRoom(roomProps: string): Promise<string> {
     throw new Error(`${errMsg}: ${error}`);
   }
 }
+
+// These are only to be used for unit tests.
+// They will throw an exception if used in production.
+export const testExports = {
+  buildRequest: (roomProps: string): RequestInit => {
+    if (process.env.NODE_ENV !== 'test') {
+      throw new Error('not permitted outside of test environment');
+    }
+    return buildRequest(roomProps);
+  },
+};

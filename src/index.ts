@@ -9,7 +9,7 @@ import './assets/daily.svg';
 import './assets/favicon.ico';
 import './assets/github.png';
 import './assets/new-tab-icon.png';
-import createRoom from './create';
+import { createRoom } from './create';
 
 function getContainer(): HTMLDivElement {
   return <HTMLDivElement>document.getElementById('container');
