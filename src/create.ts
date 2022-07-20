@@ -50,15 +50,19 @@ export default async function createRoom(roomProps: string): Promise<string> {
   const url = `/api/rooms/`;
 
   const req = buildProps(roomProps);
-  console.log("performing req:", url, req);
+  console.log('performing req:', url, req);
+  const errMsg = 'failed to create room';
   try {
     const res = await fetch(url, req);
-    console.log("res:", res);
     const resBody = await res.json();
-    console.log("body:", resBody)
+    if (res.status !== 200) {
+      throw new Error(
+        `${errMsg}; unexpected status: ${res.status}; ${resBody}`
+      );
+    }
     const roomURL = resBody.url;
     return roomURL;
   } catch (error) {
-    throw new Error(`failed to create room: ${error}`);
+    throw new Error(`${errMsg}: ${error}`);
   }
 }
