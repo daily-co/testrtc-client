@@ -1,17 +1,3 @@
-export default async function createRoom(roomProps: string): Promise<string> {
-  const url = `/api/rooms/`;
-
-  const req = buildProps(roomProps);
-  try {
-    const res = await fetch(url, req);
-    const resBody = await res.json();
-    const roomURL = resBody.url;
-    return roomURL;
-  } catch (error) {
-    throw new Error(`failed to create room: ${error}`);
-  }
-}
-
 // buildProps takes default properties supplied by user
 // and
 function buildProps(roomProps: string) {
@@ -58,4 +44,18 @@ function buildProps(roomProps: string) {
     body: data,
   };
   return req;
+}
+
+export default async function createRoom(roomProps: string): Promise<string> {
+  const url = `/api/rooms/`;
+
+  const req = buildProps(roomProps);
+  try {
+    const res = await fetch(url, req);
+    const resBody = await res.json();
+    const roomURL = resBody.url;
+    return roomURL;
+  } catch (error) {
+    throw new Error(`failed to create room: ${error}`);
+  }
 }
