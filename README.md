@@ -4,7 +4,7 @@
 
 This repository is a basic embed of Daily Prebuilt, intended to be optimized as needed for TestRTC perf tests.
 
-It takes a `roomURL` query parameter to detect which room to join.
+It takes a `roomURL` query parameter to detect which room to join. If no `roomURL` is specified, it will create a new room (if the deployment has been set up with a Daily API key).
 
 ## Running locally
 
