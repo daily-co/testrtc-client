@@ -57,7 +57,7 @@ export default async function createRoom(roomProps: string): Promise<string> {
     const resBody = await res.json();
     if (res.status !== 200) {
       throw new Error(
-        `${errMsg}; unexpected status: ${res.status}; ${resBody}`
+        `${errMsg}; unexpected status: ${res.status}; ${JSON.stringify(resBody)}`
       );
     }
     const roomURL = resBody.url;
