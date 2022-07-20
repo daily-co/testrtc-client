@@ -1,3 +1,6 @@
+netlify.toml.bak
+.netlify
+
 # Logs
 logs
 *.log

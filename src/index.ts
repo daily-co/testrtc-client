@@ -31,7 +31,7 @@ function updateJoinedElement(roomURL: string = null) {
 function joinCall(roomURL: string) {
   const container = getContainer();
 
-  // Update the following as required to optimize for perf tests
+  // Update the following as desired to optimize for perf tests
   const callFrame = DailyIframe.createFrame(container, {
     showLeaveButton: true,
     activeSpeakerMode: false,
@@ -66,21 +66,21 @@ function joinCall(roomURL: string) {
 
 // When the DOM is loaded, init room join
 window.addEventListener('DOMContentLoaded', () => {
-  // Grab room URL from query string
   const usp = new URLSearchParams(window.location.search);
   const params = Object.fromEntries(usp.entries());
 
-  if (!params.roomURL) {
-    // If room URL is not provided, create a room
-    createRoom(params.roomParams)
-      .then((url) => {
-        joinCall(url);
-      })
-      .catch((e) => {
-        throw new Error(`failed to create a Daily room for the test: ${e}`);
-      });
+  // If room URL is provided, just join the call
+  if (params.roomURL) {
+    joinCall(params.roomURL);
     return;
   }
-  // If room URL is provided, join given room
-  joinCall(params.roomURL);
+
+  // If room URL is not provided, create a room
+  createRoom(params.roomParams)
+    .then((url) => {
+      joinCall(url);
+    })
+    .catch((e) => {
+      throw new Error(`failed to create a Daily room for the test: ${e}`);
+    });
 });

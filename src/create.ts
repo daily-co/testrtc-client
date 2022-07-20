@@ -1,13 +1,13 @@
-// buildProps takes default properties supplied by user
-// and
-function buildRequest(roomProps: string): RequestInit {
+// buildRequest takes default properties supplied by user and returns
+// a new room creation request.
+function buildRequest(roomParams: string): RequestInit {
   const defaultExp = Math.floor(Date.now() / 1000) + 60 * 60; // default to 1 hour
 
   let properties;
   try {
-    properties = JSON.parse(roomProps ?? null);
+    properties = JSON.parse(roomParams ?? null);
   } catch (e) {
-    if (roomProps) {
+    if (roomParams) {
       throw new Error(
         `failed to parse supplied room creation properties. Did you supply valid JSON?: ${e}`
       );
@@ -46,10 +46,12 @@ function buildRequest(roomProps: string): RequestInit {
   return req;
 }
 
-export async function createRoom(roomProps: string): Promise<string> {
+// createRoom creates a new Daily room with the given (or default)
+// parameters
+export async function createRoom(roomParams: string): Promise<string> {
   const url = `/api/rooms/`;
 
-  const req = buildRequest(roomProps);
+  const req = buildRequest(roomParams);
   const errMsg = 'failed to create room';
   try {
     const res = await fetch(url, req);
@@ -68,7 +70,7 @@ export async function createRoom(roomProps: string): Promise<string> {
   }
 }
 
-// These are only to be used for unit tests.
+// testExports are only to be used for unit tests.
 // They will throw an exception if used in production.
 export const testExports = {
   buildRequest: (roomProps: string): RequestInit => {
