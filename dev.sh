@@ -14,4 +14,4 @@ trap cleanup EXIT
 
 # Build and run
 npm run build
-netlify dev
+npx netlify dev

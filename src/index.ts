@@ -15,8 +15,11 @@ function getContainer(): HTMLDivElement {
   return <HTMLDivElement>document.getElementById('container');
 }
 
-function updateJoinedElement(roomURL: string = null) {
+function updateJoinedElement(roomURL: string = '') {
   const inCall = document.getElementById('inCall');
+  if (!inCall) {
+    throw new Error('failed to find inCall element in DOM');
+  }
   const c = 'hidden';
   if (roomURL) {
     inCall.innerText = roomURL;

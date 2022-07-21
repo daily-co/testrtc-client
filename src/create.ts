@@ -1,11 +1,11 @@
 // buildRequest takes default properties supplied by user and returns
 // a new room creation request.
-function buildRequest(roomParams: string): RequestInit {
+function buildRequest(roomParams: string = '{}'): RequestInit {
   const defaultExp = Math.floor(Date.now() / 1000) + 60 * 60; // default to 1 hour
 
   let properties;
   try {
-    properties = JSON.parse(roomParams ?? null);
+    properties = JSON.parse(roomParams ?? '{}');
   } catch (e) {
     if (roomParams) {
       throw new Error(
@@ -73,7 +73,7 @@ export async function createRoom(roomParams: string): Promise<string> {
 // testExports are only to be used for unit tests.
 // They will throw an exception if used in production.
 export const testExports = {
-  buildRequest: (roomProps: string): RequestInit => {
+  buildRequest: (roomProps: string = '{}'): RequestInit => {
     if (process.env.NODE_ENV !== 'test') {
       throw new Error('not permitted outside of test environment');
     }

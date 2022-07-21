@@ -8,7 +8,8 @@ It takes a `roomURL` query parameter to detect which room to join. If no `roomUR
 
 ## Running locally
 
-1. Install the [Netlify CLI](https://docs.netlify.com/cli/get-started/).
+Currently, local runs are supported on OS X and Linux (including WSL).
+
 1. `mv env.sample .env`
 1. Set your Daily API key in `.env`
 1. `npm i`

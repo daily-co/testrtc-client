@@ -8,7 +8,7 @@ describe('Room creation tests', () => {
   });
 
   test('Create request with no params specified', () => {
-    const gotReq = create.testExports.buildRequest(null);
+    const gotReq = create.testExports.buildRequest();
     const wantBody = {
       properties: {
         exp: Math.floor(Date.now() / 1000) + 60 * 60,
