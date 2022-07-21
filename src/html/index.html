@@ -6,7 +6,7 @@
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; frame-src 'self' https://*.daily.co; script-src 'self' https://unpkg.com/@daily-co/daily-js; worker-src 'self';"
+      content="default-src 'self'; frame-src 'self' https://*.daily.co https://*.netlify.com; script-src 'self' https://*.netlify.app; connect-src 'self' https://*.daily.co; worker-src 'self'; style-src 'self' 'unsafe-inline'"
     />
     <link rel="stylesheet" type="text/css" href="../css/style.css" />
     <link rel="shortcut icon" href="./assets/favicon.ico" />
@@ -54,7 +54,7 @@
         <noscript>
           This application requires JavaScript to run. Please enable JavaScript in your browser.
         </noscript>
-      <div id="inCall" class="hidden">You're in!</div>
+      <div id="inCall" class="hidden"></div>
       <div id="container"></div>
       <script src="./bundle.js"></script>
 </body>

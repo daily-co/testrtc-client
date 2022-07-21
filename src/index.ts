@@ -9,18 +9,24 @@ import './assets/daily.svg';
 import './assets/favicon.ico';
 import './assets/github.png';
 import './assets/new-tab-icon.png';
+import { createRoom } from './create';
 
 function getContainer(): HTMLDivElement {
   return <HTMLDivElement>document.getElementById('container');
 }
 
-function updateJoinedElement(isVisible: boolean) {
+function updateJoinedElement(roomURL: string = '') {
   const inCall = document.getElementById('inCall');
+  if (!inCall) {
+    throw new Error('failed to find inCall element in DOM');
+  }
   const c = 'hidden';
-  if (isVisible) {
+  if (roomURL) {
+    inCall.innerText = roomURL;
     inCall.classList.remove(c);
     return;
   }
+  inCall.innerText = '';
   inCall.classList.add(c);
 }
 
@@ -28,7 +34,7 @@ function updateJoinedElement(isVisible: boolean) {
 function joinCall(roomURL: string) {
   const container = getContainer();
 
-  // Update the following as required to optimize for perf tests
+  // Update the following as desired to optimize for perf tests
   const callFrame = DailyIframe.createFrame(container, {
     showLeaveButton: true,
     activeSpeakerMode: false,
@@ -48,10 +54,10 @@ function joinCall(roomURL: string) {
   // when we're in from TestRTC
   callFrame
     .on('joined-meeting', () => {
-      updateJoinedElement(true);
+      updateJoinedElement(roomURL);
     })
     .on('left-meeting', () => {
-      updateJoinedElement(false);
+      updateJoinedElement();
     });
 
   // Join!
@@ -63,14 +69,21 @@ function joinCall(roomURL: string) {
 
 // When the DOM is loaded, init room join
 window.addEventListener('DOMContentLoaded', () => {
-  // Grab room URL from query string
   const usp = new URLSearchParams(window.location.search);
   const params = Object.fromEntries(usp.entries());
 
-  if (!params.roomURL) {
-    const c = getContainer();
-    c.innerText = 'room URL not provided';
+  // If room URL is provided, just join the call
+  if (params.roomURL) {
+    joinCall(params.roomURL);
     return;
   }
-  joinCall(params.roomURL);
+
+  // If room URL is not provided, create a room
+  createRoom(params.roomParams)
+    .then((url) => {
+      joinCall(url);
+    })
+    .catch((e) => {
+      throw new Error(`failed to create a Daily room for the test: ${e}`);
+    });
 });
