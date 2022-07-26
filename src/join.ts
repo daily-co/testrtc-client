@@ -1,4 +1,4 @@
-import DailyIframe, { DailyCallOptions } from '@daily-co/daily-js';
+import DailyIframe, { DailyCall, DailyCallOptions } from '@daily-co/daily-js';
 
 function getContainer(): HTMLDivElement {
   return <HTMLDivElement>document.getElementById('container');
@@ -19,25 +19,12 @@ function updateJoinedElement(roomURL: string = '') {
   inCall.classList.add(c);
 }
 
-// parseCallConfig parses the given JSON-format call object config,
-// validates that it consists of valid DailyCallOptions fields,
+// parseCallConfig parses the given JSON-format call object config
 // and returns a DailyCallOptions object.
 function parseCallConfig(callConfig: string): DailyCallOptions {
   try {
     const parsedConfig = JSON.parse(callConfig);
     const callOptions = <DailyCallOptions>parsedConfig;
-
-    // Verify that every given key is a valid Daily call option
-    const parsedConfigKeys = Object.keys(parsedConfig);
-    
-    for (let i = 0; i < parsedConfigKeys.length; i += 1) {
-      const k = parsedConfigKeys[i];
-      // If the given key is not in our call options instance,
-      // throw an error. The caller misconfigured their request.
-      if (!(k in callOptions)) {
-        throw new Error(`invalid call option key provided: ${k}`);
-      }
-    }
     return callOptions;
   } catch (e) {
     throw new Error(
@@ -69,16 +56,16 @@ function buildCallOptions(callConfig: string): DailyCallOptions {
   return { ...defaultCallOptions, ...callOptions };
 }
 
+function createCallFrame(callConfig: string): DailyCall {
+  const container = getContainer();
+  const callOptions = buildCallOptions(callConfig);
+  const callFrame = DailyIframe.createFrame(container, callOptions);
+  return callFrame;
+}
+
 // joinCall joins the given video call with the provided call configuration
 export function joinCall(roomURL: string, callConfig: string = '{}') {
-  console.log('callConfig:', callConfig);
-  const container = getContainer();
-
-  const callOptions = buildCallOptions(callConfig);
-  console.log('final call options:', callOptions);
-
-  const callFrame = DailyIframe.createFrame(container, callOptions);
-
+  const callFrame = createCallFrame(callConfig);
   // Set up a couple of handlers to make it simpler to detect
   // when we're in from TestRTC
   callFrame
@@ -95,3 +82,22 @@ export function joinCall(roomURL: string, callConfig: string = '{}') {
     userName: 'Robot',
   });
 }
+
+// testExports are only to be used for unit tests.
+// They will throw an exception if used in production.
+const errMsgNotPermitted = 'not permitted outside of test environment';
+
+export const testExports = {
+  buildCallOptions: (callConfig: string): DailyCallOptions => {
+    if (process.env.NODE_ENV !== 'test') {
+      throw new Error(errMsgNotPermitted);
+    }
+    return buildCallOptions(callConfig);
+  },
+  createCallFrame: (callOptions: string): DailyCall => {
+    if (process.env.NODE_ENV !== 'test') {
+      throw new Error(errMsgNotPermitted);
+    }
+    return createCallFrame(callOptions);
+  },
+};
