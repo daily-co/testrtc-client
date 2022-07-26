@@ -71,6 +71,7 @@ export function joinCall(roomURL: string, callConfig: string = '{}') {
   callFrame
     .on('joined-meeting', () => {
       updateJoinedElement(roomURL);
+      callFrame.setBandwidth({kbs: 2000});
     })
     .on('left-meeting', () => {
       updateJoinedElement();
@@ -82,6 +83,9 @@ export function joinCall(roomURL: string, callConfig: string = '{}') {
     userName: 'Robot',
   });
 }
+
+
+
 
 // testExports are only to be used for unit tests.
 // They will throw an exception if used in production.
