@@ -1,7 +1,8 @@
 #!/bin/bash -e
 
 # Setup
-source .env
+set -o allexport; source .env; set +o allexport
+
 npm run netlify-config-redirect
 
 # Configure exit trap
