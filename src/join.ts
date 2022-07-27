@@ -12,6 +12,13 @@ function getContainer(): HTMLDivElement {
   return <HTMLDivElement>document.getElementById('container');
 }
 
+function getVideoID(sessionID: string): string {
+  return `video-${sessionID}`;
+}
+
+// updateJoinedElement updates the relevant DOM element
+// with the joined room URL. This can then be used to
+// broadcast the room URL to other TestRTC agents.
 function updateJoinedElement(roomURL: string = '') {
   const inCall = document.getElementById('inCall');
   if (!inCall) {
@@ -27,9 +34,7 @@ function updateJoinedElement(roomURL: string = '') {
   inCall.classList.add(c);
 }
 
-function getVideoID(sessionID: string): string {
-  return `video-${sessionID}`;
-}
+// addParticipant adds a video element for the given participant
 function addParticipant(p: DailyParticipant) {
   let v = <HTMLVideoElement>document.getElementById(getVideoID(p.session_id));
   if (!v) {
@@ -49,6 +54,7 @@ function addParticipant(p: DailyParticipant) {
   c.appendChild(v);
 }
 
+// removeParticipant removes a video element for the given participant
 function removeParticipant(p: DailyParticipant) {
   const v = document.getElementById(getVideoID(p.session_id));
   if (v) {
@@ -56,6 +62,9 @@ function removeParticipant(p: DailyParticipant) {
   }
 }
 
+// updateParticipant updates a given participant's video tracks.
+// Currently, it updates them unconditionally on any update,
+// regardless of whether it is the tracks that triggered the event.
 function updateParticipant(p: DailyParticipant) {
   const v = <HTMLVideoElement>document.getElementById(getVideoID(p.session_id));
   if (!v) {
@@ -100,6 +109,8 @@ function buildCallOptions(callConfig: string): DailyCallOptions {
   return { ...defaultCallOptions, ...callOptions };
 }
 
+// createCallObject creates a Daily call object with the given
+// configuration and returns it in the form of a DailyCall
 function createCallObject(callConfig: string): DailyCall {
   const callOptions = buildCallOptions(callConfig);
   const callFrame = DailyIframe.createCallObject(callOptions);
