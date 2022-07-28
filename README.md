@@ -1,6 +1,6 @@
 # Daily TestRTC client
 
-This repository contains everything you need to test [Daily](https://daily.co) WebRTC calls in various configurations in [TestRTC](https://testrtc.com). This consists of a simple Daily client that is able to create rooms and join calls in various configurations and a set of TestRTC scripts set up to test Daily performance by using this client.
+This repository contains everything you need to test [Daily WebRTC calls](https://daily.co) in various configurations in [TestRTC](https://testrtc.com). This consists of a simple Daily client that is able to create rooms and join calls in various configurations and a set of TestRTC scripts set up to test Daily performance by using this client.
 
 It is intended to facilitate quick deployment to [Netlify](https://netlify.com) to get up and running.
 
@@ -8,7 +8,7 @@ It is intended to facilitate quick deployment to [Netlify](https://netlify.com) 
 
 ### Getting a Daily API key
 
-You will need a Daily API key. To get one, sign up for a free [Daily account](https://dashboard.daily.co/signup). You will find your API key in your [Daily dashboard](https://dashboard.daily.co/developers)
+You will need a Daily API key. To get one, sign up for a free [Daily account](https://dashboard.daily.co/signup). You will find your API key in your [Daily dashboard](https://dashboard.daily.co/developers).
 
 ### Deployment
 
@@ -36,8 +36,16 @@ Currently, local runs are supported on OS X and Linux (including WSL).
 The test client allows callers to specify their own room creation and call configuration options as query prameters. You can use these if you'd like to modify our bundled tests or write your own:
 
 * `roomParams`: JSON string matching Daily's [room configuration properties](https://docs.daily.co/reference/rest-api/rooms/config)
-* `callOptions`: JSON string matching Daily's [call object configuration properties](https://docs.daily.co/reference/daily-js/daily-iframe-class/properties)
+* `callOptions`: JSON string matching Daily's [call object configuration properties](https://docs.daily.co/reference/daily-js/factory-methods/create-call-object)
 * `roomURL`: A string containing the full URL to a Daily room for TestRTC agents to join.
+
+### Example
+
+a `GET` request to the following URL will result in a room being created which will connect to the Sydney signaling server:
+
+```
+https://your-deployment.netlifyapp.com/?roomParams={"geo":"ap-southeast-2"}
+```
 
 ## Contributing and feedback
 
