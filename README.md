@@ -2,11 +2,21 @@
 
 [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/daily-co/testrtc-client&stack=cms)
 
-This repository is a basic embed of Daily Prebuilt, intended to be optimized as needed for TestRTC perf tests.
+This repository contains everything you need to test [Daily](https://daily.co) calls in various configurations in TestRTC. This consists of a simple Daily client that is able to create rooms and join calls in various configurations and a set [TestRTC](https://testrtc.com) scripts set up to test Daily performance by using this client.
 
-It takes a `roomURL` query parameter to detect which room to join. If no `roomURL` is specified, it will create a new room (if the deployment has been set up with a Daily API key).
+It is intended to facilitate quick deployment to [Netlify](https://netlify.com) to get up and running.
 
-## Running locally
+## Getting started
+
+### Getting a Daily API key
+
+You will need a Daily API key. To get one, sign up for a free [Daily account](https://dashboard.daily.co/signup). You will find your API key in your [Daily dashboard](https://dashboard.daily.co/developers)
+
+### Deployment
+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/daily-co/testrtc-client&stack=cms)
+
+### Running locally
 
 Currently, local runs are supported on OS X and Linux (including WSL).
 
@@ -16,6 +26,20 @@ Currently, local runs are supported on OS X and Linux (including WSL).
 1. `npm run dev`
 
 ⚠️ The above process will result in your local `netlify.toml` file being modified with your Daily API key. This should be set back to `"DAILY_API_KEY_PLACEHOLDER"` automatically when you exit the development environment, but **always double check to make sure you do not commit the file with your API key**!
+
+### Using our prebuilt TestRTC scripts
+
+You can copy the scripts from the `testrtc` directory into your TestRTC account. Replace `"[YOUR-DEPLOYMENT-URL]"` with the address of your Netlify deployment.
+
+Check out [TestRTC's testing documentation](https://testrtc.com/article-categories/testingrtc/) for more information on using TestRTC.
+
+## Writing your own tests
+
+The test client allows callers to specify their own room creation and call configuration options as query prameters. You can use these if you'd like to modify our bundled tests or write your own:
+
+* `roomParams`: JSON string matching Daily's [room configuration properties](https://docs.daily.co/reference/rest-api/rooms/config)
+* `callOptions`: JSON string matching Daily's [call object configuration properties](https://docs.daily.co/reference/daily-js/daily-iframe-class/properties)
+* `roomURL`: A string containing the full URL to a Daily room for TestRTC agents to join.
 
 ## Contributing and feedback
 
