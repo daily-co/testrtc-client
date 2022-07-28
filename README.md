@@ -1,7 +1,5 @@
 # Daily TestRTC client
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/daily-co/testrtc-client&stack=cms)
-
 This repository contains everything you need to test [Daily](https://daily.co) calls in various configurations in TestRTC. This consists of a simple Daily client that is able to create rooms and join calls in various configurations and a set [TestRTC](https://testrtc.com) scripts set up to test Daily performance by using this client.
 
 It is intended to facilitate quick deployment to [Netlify](https://netlify.com) to get up and running.
