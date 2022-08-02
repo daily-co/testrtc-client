@@ -117,8 +117,10 @@ function createCallObject(callConfig: string): DailyCall {
   return callFrame;
 }
 
+type bandwidthOverride = Params<DailyCall['setBandwidth']>[0]
+
 const bandwidthOverride = {
-  kbs: 10000
+  kbs: 'NO_CAP'
 }
 
 
