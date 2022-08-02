@@ -113,8 +113,8 @@ function buildCallOptions(callConfig: string): DailyCallOptions {
 // configuration and returns it in the form of a DailyCall
 function createCallObject(callConfig: string): DailyCall {
   const callOptions = buildCallOptions(callConfig);
-  const callFrame = DailyIframe.createCallObject(callOptions);
-  return callFrame;
+  const co = DailyIframe.createCallObject(callOptions);
+  return co;
 }
 
 // joinCall joins the given video call with the provided call configuration
