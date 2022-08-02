@@ -131,7 +131,7 @@ export function joinCall(roomURL: string, callConfig: string = '{}') {
     .on('joined-meeting', (e: DailyEventObjectParticipants) => {
       updateJoinedElement(roomURL);
       addParticipant(e.participants.local);
-      callFrame.setBandwidth(bandwidthOverride);
+      call.setBandwidth(bandwidthOverride);
     })
     .on('left-meeting', () => {
       updateJoinedElement();
