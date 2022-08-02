@@ -7,6 +7,7 @@ import DailyIframe, {
   DailyEventObjectParticipants,
   DailyParticipant,
 } from '@daily-co/daily-js';
+import merge from 'lodash.merge';
 
 function getContainer(): HTMLDivElement {
   return <HTMLDivElement>document.getElementById('container');
@@ -105,8 +106,8 @@ function buildCallOptions(callConfig: string): DailyCallOptions {
       avoidEval: true,
     },
   };
-
-  return { ...defaultCallOptions, ...callOptions };
+  const merged = merge(defaultCallOptions, callOptions);
+  return merged;
 }
 
 // createCallObject creates a Daily call object with the given

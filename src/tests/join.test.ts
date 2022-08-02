@@ -19,26 +19,28 @@ beforeEach(() => {
 
 describe('Valid config call option building tests', () => {
   test('No extra call config provided', () => {
-    const gotFrame = join.testExports.createCallObject('{}');
-    expect(gotFrame).toBeTruthy();
+    const gotCallObject = join.testExports.createCallObject('{}');
+    expect(gotCallObject).toBeTruthy();
   });
 
   test('Basic valid call config provided', () => {
     const callConfig = `{"subscribeToTracksAutomatically": true}`;
     const callOptions = join.testExports.buildCallOptions(callConfig);
     expect(callOptions.subscribeToTracksAutomatically).toBe(true);
-    const gotFrame = join.testExports.createCallObject(callConfig);
-    expect(gotFrame).toBeTruthy();
+    const gotCallObject = join.testExports.createCallObject(callConfig);
+    expect(gotCallObject).toBeTruthy();
   });
 
   test('Nested valid call config provided', () => {
-    const callConfig = `{"dailyConfig": {"avoidEval": true}}`;
+    const callConfig = `{"dailyConfig": {"experimentalChromeVideoMuteLightOff": true}}`;
     const callOptions = join.testExports.buildCallOptions(callConfig);
 
     expect(callOptions.dailyConfig?.avoidEval).toBe(true);
-
-    const gotFrame = join.testExports.createCallObject(callConfig);
-    expect(gotFrame).toBeTruthy();
+    expect(callOptions.dailyConfig?.experimentalChromeVideoMuteLightOff).toBe(
+      true
+    );
+    const gotCallObject = join.testExports.createCallObject(callConfig);
+    expect(gotCallObject).toBeTruthy();
   });
 });
 
