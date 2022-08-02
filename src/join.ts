@@ -35,6 +35,17 @@ function updateJoinedElement(roomURL: string = '') {
   inCall.classList.add(c);
 }
 
+function updateVideoDOM(p: DailyParticipant): MediaStream {
+  const tracks: Array<MediaStreamTrack> = [];
+  if (!p.local && p.audioTrack) {
+    tracks.push(p.audioTrack);
+  }
+  if (p.videoTrack) {
+    tracks.push(p.videoTrack);
+  }
+  return new MediaStream(tracks);
+}
+
 // addParticipant adds a video element for the given participant
 function addParticipant(p: DailyParticipant) {
   let v = <HTMLVideoElement>document.getElementById(getVideoID(p.session_id));
@@ -43,14 +54,8 @@ function addParticipant(p: DailyParticipant) {
   }
   v.id = getVideoID(p.session_id);
   v.autoplay = true;
-  const tracks: Array<MediaStreamTrack> = [];
-  if (p.audioTrack) {
-    tracks.push(p.audioTrack);
-  }
-  if (p.videoTrack) {
-    tracks.push(p.videoTrack);
-  }
-  v.srcObject = new MediaStream(tracks);
+  const stream = updateVideoDOM(p);
+  v.srcObject = stream;
   const c = getContainer();
   c.appendChild(v);
 }
@@ -72,14 +77,8 @@ function updateParticipant(p: DailyParticipant) {
     addParticipant(p);
     return;
   }
-  const tracks: Array<MediaStreamTrack> = [];
-  if (p.audioTrack) {
-    tracks.push(p.audioTrack);
-  }
-  if (p.videoTrack) {
-    tracks.push(p.videoTrack);
-  }
-  v.srcObject = new MediaStream(tracks);
+  const stream = updateVideoDOM(p);
+  v.srcObject = stream;
 }
 
 // parseCallConfig parses the given JSON-format call object config
@@ -125,10 +124,10 @@ const bandwidthOverride = {
 
 // joinCall joins the given video call with the provided call configuration
 export function joinCall(roomURL: string, callConfig: string = '{}') {
-  const callFrame = createCallObject(callConfig);
+  const call = createCallObject(callConfig);
   // Set up a couple of handlers to make it simpler to detect
   // when we're in from TestRTC
-  callFrame
+  call
     .on('joined-meeting', (e: DailyEventObjectParticipants) => {
       updateJoinedElement(roomURL);
       addParticipant(e.participants.local);
@@ -155,7 +154,7 @@ export function joinCall(roomURL: string, callConfig: string = '{}') {
 
   // Join!
   try {
-    callFrame.join({
+    call.join({
       url: roomURL,
       userName: 'Robot',
     });
