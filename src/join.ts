@@ -117,6 +117,11 @@ function createCallObject(callConfig: string): DailyCall {
   return callFrame;
 }
 
+const bandwidthOverride = {
+  kbs: 2000
+}
+
+
 // joinCall joins the given video call with the provided call configuration
 export function joinCall(roomURL: string, callConfig: string = '{}') {
   const callFrame = createCallObject(callConfig);
@@ -126,6 +131,7 @@ export function joinCall(roomURL: string, callConfig: string = '{}') {
     .on('joined-meeting', (e: DailyEventObjectParticipants) => {
       updateJoinedElement(roomURL);
       addParticipant(e.participants.local);
+      callFrame.setBandwidth(bandwidthOverride);
     })
     .on('left-meeting', () => {
       updateJoinedElement();
