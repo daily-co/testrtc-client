@@ -1,7 +1,7 @@
 import * as join from '../join';
 
 const mockGetUserMedia = jest.fn(
-  async () =>
+  () =>
     new Promise<void>((resolve) => {
       resolve();
     })
