@@ -8,6 +8,7 @@ import DailyIframe, {
   DailyParticipant,
 } from '@daily-co/daily-js';
 import merge from 'lodash.merge';
+import { Bandwidth } from './bandwidth';
 
 function getContainer(): HTMLDivElement {
   return <HTMLDivElement>document.getElementById('container');
@@ -117,9 +118,43 @@ function createCallObject(callConfig: string): DailyCall {
   return co;
 }
 
+function getBandwidth(bandwidthConfig: string): Bandwidth {
+  try {
+    const parsedConfig = JSON.parse(bandwidthConfig);
+    const bandwidth = <Bandwidth>parsedConfig;
+
+    // Some very rudimentary validation, since
+    // Daily doesn't seem to throw an error if this
+    // is bad like it does with call object creation
+    const { kbs } = bandwidth;
+    if (kbs && typeof kbs !== 'number' && kbs !== 'NO_CAP') {
+      throw new Error(`invalid kbs value: ${kbs}`);
+    }
+    return bandwidth;
+  } catch (e) {
+    throw new Error(
+      `failed to parse supplied bandwidth configuration. Did you supply valid JSON?: ${e}`
+    );
+  }
+}
+
 // joinCall joins the given video call with the provided call configuration
-export function joinCall(roomURL: string, callConfig: string = '{}') {
+export function joinCall(
+  roomURL: string,
+  callConfig: string = '{}',
+  bandwidthConfig: string = ''
+) {
   const call = createCallObject(callConfig);
+
+  if (bandwidthConfig) {
+    const bandwidth = getBandwidth(bandwidthConfig);
+    try {
+      call.setBandwidth(bandwidth);
+    } catch (e) {
+      console.error('failed to set bandwidth:', e);
+    }
+  }
+
   // Set up a couple of handlers to make it simpler to detect
   // when we're in from TestRTC
   call
@@ -167,6 +202,12 @@ export const testExports = {
       throw new Error(errMsgNotPermitted);
     }
     return buildCallOptions(callConfig);
+  },
+  getBandwidth: (bandwidthConfig: string): Bandwidth => {
+    if (process.env.NODE_ENV !== 'test') {
+      throw new Error(errMsgNotPermitted);
+    }
+    return getBandwidth(bandwidthConfig);
   },
   createCallObject: (callOptions: string): DailyCall => {
     if (process.env.NODE_ENV !== 'test') {

@@ -18,14 +18,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // If room URL is provided, just join the call
   if (params.roomURL) {
-    joinCall(params.roomURL, params.callConfig);
+    joinCall(params.roomURL, params.callConfig, params.setBandwidth);
     return;
   }
 
   // If room URL is not provided, create a room
   createRoom(params.roomParams)
     .then((url) => {
-      joinCall(url, params.callConfig);
+      joinCall(url, params.callConfig, params.setBandwidth);
     })
     .catch((e) => {
       throw new Error(`failed to create a Daily room for the test: ${e}`);

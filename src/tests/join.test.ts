@@ -59,3 +59,34 @@ describe('Invalid config call option building tests', () => {
     }).toThrowError();
   });
 });
+
+describe('setBandwidth tests', () => {
+  test('basic valid setBandwidth config', () => {
+    const wantBandwidth = {
+      kbs: 20,
+      trackConstraints: { width: 64, height: 64, frameRate: 3 },
+    };
+    const bandwidthConfig = JSON.stringify(wantBandwidth);
+    const gotBandwidth = join.testExports.getBandwidth(bandwidthConfig);
+    expect(gotBandwidth).toStrictEqual(wantBandwidth);
+  });
+
+  test('valid setBandwidth config with NO_CAP', () => {
+    const wantBandwidth = {
+      kbs: 'NO_CAP',
+    };
+    const bandwidthConfig = JSON.stringify(wantBandwidth);
+    const gotBandwidth = join.testExports.getBandwidth(bandwidthConfig);
+    expect(gotBandwidth).toStrictEqual(wantBandwidth);
+  });
+
+  test('invalid setBandwidth config', () => {
+    const wantBandwidth = {
+      kbs: 'NO-CAP',
+    };
+    const bandwidthConfig = JSON.stringify(wantBandwidth);
+    expect(() => {
+      join.testExports.getBandwidth(bandwidthConfig);
+    }).toThrowError();
+  });
+});
