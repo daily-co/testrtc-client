@@ -1,3 +1,8 @@
+:root {
+  --video-width: 200px;
+  --video-height: 200px;
+}
+
 body {
   display: flex;
   flex-direction: column;
@@ -121,6 +126,6 @@ noscript {
 }
 
 video {
-  width: 200px;
-  height: 200px;
+  width: var(--video-width);
+  height: var(--video-height);
 }
