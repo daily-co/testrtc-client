@@ -148,20 +148,18 @@ export function joinCall(
   bandwidthConfig: string = ''
 ) {
   const call = createCallObject(callConfig);
-
-  if (bandwidthConfig) {
-    const bandwidth = getBandwidth(bandwidthConfig);
-    try {
-      call.setBandwidth(bandwidth);
-    } catch (e) {
-      console.error('failed to set bandwidth:', e);
-    }
-  }
-
   // Set up a couple of handlers to make it simpler to detect
   // when we're in from TestRTC
   call
     .on('joined-meeting', (e: DailyEventObjectParticipants) => {
+      if (bandwidthConfig) {
+        const bandwidth = getBandwidth(bandwidthConfig);
+        try {
+          call.setBandwidth(bandwidth);
+        } catch (err) {
+          console.error('failed to set bandwidth:', err);
+        }
+      }
       updateJoinedElement(roomURL);
       addParticipant(e.participants.local);
     })
