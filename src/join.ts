@@ -9,6 +9,8 @@ import DailyIframe, {
 } from '@daily-co/daily-js';
 import merge from 'lodash.merge';
 
+// No chance of idx out of range exception here, as it
+// will not transpile if we index into a nonexistent pos
 type Bandwidth = Parameters<DailyCall['setBandwidth']>[0];
 
 function getContainer(): HTMLDivElement {
