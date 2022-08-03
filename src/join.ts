@@ -8,7 +8,8 @@ import DailyIframe, {
   DailyParticipant,
 } from '@daily-co/daily-js';
 import merge from 'lodash.merge';
-import { Bandwidth } from './bandwidth';
+
+type Bandwidth = Parameters<DailyCall['setBandwidth']>[0];
 
 function getContainer(): HTMLDivElement {
   return <HTMLDivElement>document.getElementById('container');
