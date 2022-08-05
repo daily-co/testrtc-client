@@ -112,6 +112,7 @@ function buildCallOptions(callConfig: string): DailyCallOptions {
       avoidEval: true,
       modifyLocalSdpHook: (rtcSDP: any) => {
         try {
+          console.log('original sdp', rtcSDP)
           let parsed = sdpTransform.parse(rtcSDP.sdp);
           console.log('before', parsed);
           let VP9 = parsed.media[0].rtp.filter((r: any) => r.codec === 'VP9');
@@ -120,6 +121,7 @@ function buildCallOptions(callConfig: string): DailyCallOptions {
           parsed.media[0].payloads = newPayloads;
           console.log('after', parsed);
           let newSdp = sdpTransform.write(parsed);
+          console.log('new sdp', newSdp)
           return newSdp;
         } catch (e) {
           this.log(`error setting VP9 preference: ${e}`);
