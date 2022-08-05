@@ -109,11 +109,12 @@ function buildCallOptions(callConfig: string): DailyCallOptions {
       avoidEval: true,
       modifyRemoteSdpHook: (rtcSDP: any) => {
         let newSdp = rtcSDP.sdp.replace(
-          /a=rtcp-rsize/g,
-          'a=rtcp-rsize\na=rtpmap:98 VP9/90000\na=rtcp-fb:98 goog-remb\na=rtcp-fb:98 transport-cc\na=rtcp-fb:98 ccm fir\na=rtcp-fb:98 nack\na=rtcp-fb:98 nack pli\na=fmtp:98 profile-id=0\n'
+          /m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 127 121 125 107 108 109 124 120 123 119 35 36 41 42 114 115 116/g,
+          'm=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 127 121 125 107 108 109 124 120 123 119 35 36 41 42 114 115 116'
         );
         console.log("new SDP:", newSdp);
         return newSdp;
+
       },
     },
   };
