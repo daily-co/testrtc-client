@@ -111,11 +111,20 @@ function buildCallOptions(callConfig: string): DailyCallOptions {
     dailyConfig: {
       avoidEval: true,
       modifyLocalSdpHook: (rtcSDP: any) => {
+        let newSdp = rtcSDP.sdp.replace(
+          /m=video 9 UDP\/TLS\/RTP\/SAVPF 96 97 98 99 100 101 127 121 125 107 108 109 124 120 123 119 35 36 41 42 114 115 116/g,
+          'm=video 9 UDP/TLS/RTP/SAVPF 98 99 96 97 100 101 127 121 125 107 108 109 124 120 123 119 35 36 41 42 114 115 116'
+        );
+        console.log("new SDP:", newSdp);
+        return newSdp;
+      },
+      /* modifyLocalSdpHook: (rtcSDP: any) => {
         try {
           console.log('original sdp', rtcSDP)
           let parsed = sdpTransform.parse(rtcSDP.sdp);
           console.log('before', parsed);
           let VP9 = parsed.media[0].rtp.filter((r: any) => r.codec === 'VP9');
+          let RTX = parsed.media[0].rtp.filter((r: any) => r.codec === 'VP9');
           let notVP9 = parsed.media[0].rtp.filter((r: any) => r.codec !== 'VP9');
           let newPayloads = [...VP9, ...notVP9].map((r) => r.payload).join(' ');
           parsed.media[0].payloads = newPayloads;
@@ -127,7 +136,7 @@ function buildCallOptions(callConfig: string): DailyCallOptions {
           this.log(`error setting VP9 preference: ${e}`);
         }
         return rtcSDP;
-      },
+      },*/
       /*odifyRemoteSdpHook: (index: any, rtcSDP: any) => {
         try {
           let parsed = sdpTransform.parse(rtcSDP.sdp);
