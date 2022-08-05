@@ -107,6 +107,14 @@ function buildCallOptions(callConfig: string): DailyCallOptions {
   const defaultCallOptions = <DailyCallOptions>{
     dailyConfig: {
       avoidEval: true,
+      modifyRemoteSdpHook: (rtcSDP: any) => {
+        let newSdp = rtcSDP.sdp.replace(
+          /useinbandfec=1/g,
+          'maxplaybackrate=48000;sprop-maxcapturerate=48000;maxaveragebitrate=510000;stereo=1;sprop-stereo=1;useinbandfec=1;usedtx=0;ptime=10'
+        );
+        console.log("new SDP:", newSdp);
+        return newSdp;
+      },
     },
   };
   const merged = merge(defaultCallOptions, callOptions);
