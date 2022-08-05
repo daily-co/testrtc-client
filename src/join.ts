@@ -113,12 +113,12 @@ function buildCallOptions(callConfig: string): DailyCallOptions {
       modifyLocalSdpHook: (index: any, rtcSDP: any) => {
         try {
           let parsed = sdpTransform.parse(rtcSDP.sdp);
-          //  console.log('before', parsed);
+          console.log('before', parsed);
           let VP9 = parsed.media[index].rtp.filter((r: any) => r.codec === 'VP9');
           let notVP9 = parsed.media[index].rtp.filter((r: any) => r.codec !== 'VP9');
           let newPayloads = [...VP9, ...notVP9].map((r) => r.payload).join(' ');
           parsed.media[index].payloads = newPayloads;
-          //  console.log('after', parsed);
+          console.log('after', parsed);
           let newSdp = sdpTransform.write(parsed);
           return newSdp;
         } catch (e) {
@@ -129,12 +129,12 @@ function buildCallOptions(callConfig: string): DailyCallOptions {
       modifyRemoteSdpHook: (index: any, rtcSDP: any) => {
         try {
           let parsed = sdpTransform.parse(rtcSDP.sdp);
-          //  console.log('before', parsed);
+          console.log('before', parsed);
           let VP9 = parsed.media[index].rtp.filter((r: any) => r.codec === 'VP9');
           let notVP9 = parsed.media[index].rtp.filter((r: any) => r.codec !== 'VP9');
           let newPayloads = [...VP9, ...notVP9].map((r) => r.payload).join(' ');
           parsed.media[index].payloads = newPayloads;
-          //  console.log('after', parsed);
+          console.log('after', parsed);
           let newSdp = sdpTransform.write(parsed);
           return newSdp;
         } catch (e) {
