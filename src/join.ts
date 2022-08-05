@@ -7,7 +7,10 @@ import DailyIframe, {
   DailyEventObjectParticipants,
   DailyParticipant,
 } from '@daily-co/daily-js';
+
+
 import merge from 'lodash.merge';
+const sdpTransform = require('sdp-transform');
 
 // No chance of idx out of range exception here, as it
 // will not transpile if we index into a nonexistent pos
@@ -109,33 +112,33 @@ function buildCallOptions(callConfig: string): DailyCallOptions {
       avoidEval: true,
       modifyLocalSdpHook: (index: any, rtcSDP: any) => {
         try {
-          let parsed = rtcSDP.parse(rtcSDP.sdp);
-          //console.log('before', parsed);
-          let vp9 = parsed.media[index].rtp.filter((r: any) => r.codec === 'VP9');
-          let notVP9 = parsed.media[index].rtp.filter((r: any) => r.codec !== 'VP9');
-          let newPayloads = [...vp9, ...notVP9].map((r) => r.payload).join(' ');
+          let parsed = sdpTransform.parse(rtcSDP.sdp);
+          //  console.log('before', parsed);
+          let h264 = parsed.media[index].rtp.filter((r: any) => r.codec === 'H264');
+          let notH264 = parsed.media[index].rtp.filter((r: any) => r.codec !== 'H264');
+          let newPayloads = [...h264, ...notH264].map((r) => r.payload).join(' ');
           parsed.media[index].payloads = newPayloads;
-          //console.log('after', parsed);
-          let newSdp = rtcSDP.write(parsed);
+          //  console.log('after', parsed);
+          let newSdp = sdpTransform.write(parsed);
           return newSdp;
         } catch (e) {
-          this.log(`error setting vp9 preference: ${e}`);
+          this.log(`error setting h264 preference: ${e}`);
         }
         return rtcSDP;
       },
       modifyRemoteSdpHook: (index: any, rtcSDP: any) => {
         try {
-          let parsed = rtcSDP.parse(rtcSDP.sdp);
-          //console.log('before', parsed);
-          let vp9 = parsed.media[index].rtp.filter((r: any) => r.codec === 'VP9');
-          let notVP9 = parsed.media[index].rtp.filter((r: any) => r.codec !== 'VP9');
-          let newPayloads = [...vp9, ...notVP9].map((r) => r.payload).join(' ');
+          let parsed = sdpTransform.parse(rtcSDP.sdp);
+          //  console.log('before', parsed);
+          let h264 = parsed.media[index].rtp.filter((r: any) => r.codec === 'H264');
+          let notH264 = parsed.media[index].rtp.filter((r: any) => r.codec !== 'H264');
+          let newPayloads = [...h264, ...notH264].map((r) => r.payload).join(' ');
           parsed.media[index].payloads = newPayloads;
-          //console.log('after', parsed);
-          let newSdp = rtcSDP.write(parsed);
+          //  console.log('after', parsed);
+          let newSdp = sdpTransform.write(parsed);
           return newSdp;
         } catch (e) {
-          this.log(`error setting vp9 preference: ${e}`);
+          this.log(`error setting h264 preference: ${e}`);
         }
         return rtcSDP;
       },
