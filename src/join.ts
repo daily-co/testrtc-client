@@ -109,8 +109,15 @@ function buildCallOptions(callConfig: string): DailyCallOptions {
       avoidEval: true,
       modifyRemoteSdpHook: (rtcSDP: any) => {
         let newSdp = rtcSDP.sdp.replace(
-          /useinbandfec=1/g,
-          'maxplaybackrate=48000;sprop-maxcapturerate=48000;maxaveragebitrate=510000;stereo=1;sprop-stereo=1;useinbandfec=1;usedtx=0;ptime=10'
+          /a=rtcp-rsize/g,
+          'a=rtcp-rsize\n
+          a=rtpmap:98 VP9/90000\n
+          a=rtcp-fb:98 goog-remb\n
+          a=rtcp-fb:98 transport-cc\n
+          a=rtcp-fb:98 ccm fir\n
+          a=rtcp-fb:98 nack\n
+          a=rtcp-fb:98 nack pli\n
+          a=fmtp:98 profile-id=0\n'
         );
         console.log("new SDP:", newSdp);
         return newSdp;
