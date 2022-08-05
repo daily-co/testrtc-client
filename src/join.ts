@@ -114,15 +114,15 @@ function buildCallOptions(callConfig: string): DailyCallOptions {
         try {
           let parsed = sdpTransform.parse(rtcSDP.sdp);
           //  console.log('before', parsed);
-          let h264 = parsed.media[index].rtp.filter((r: any) => r.codec === 'H264');
-          let notH264 = parsed.media[index].rtp.filter((r: any) => r.codec !== 'H264');
-          let newPayloads = [...h264, ...notH264].map((r) => r.payload).join(' ');
+          let VP9 = parsed.media[index].rtp.filter((r: any) => r.codec === 'VP9');
+          let notVP9 = parsed.media[index].rtp.filter((r: any) => r.codec !== 'VP9');
+          let newPayloads = [...VP9, ...notVP9].map((r) => r.payload).join(' ');
           parsed.media[index].payloads = newPayloads;
           //  console.log('after', parsed);
           let newSdp = sdpTransform.write(parsed);
           return newSdp;
         } catch (e) {
-          this.log(`error setting h264 preference: ${e}`);
+          this.log(`error setting VP9 preference: ${e}`);
         }
         return rtcSDP;
       },
@@ -130,15 +130,15 @@ function buildCallOptions(callConfig: string): DailyCallOptions {
         try {
           let parsed = sdpTransform.parse(rtcSDP.sdp);
           //  console.log('before', parsed);
-          let h264 = parsed.media[index].rtp.filter((r: any) => r.codec === 'H264');
-          let notH264 = parsed.media[index].rtp.filter((r: any) => r.codec !== 'H264');
-          let newPayloads = [...h264, ...notH264].map((r) => r.payload).join(' ');
+          let VP9 = parsed.media[index].rtp.filter((r: any) => r.codec === 'VP9');
+          let notVP9 = parsed.media[index].rtp.filter((r: any) => r.codec !== 'VP9');
+          let newPayloads = [...VP9, ...notVP9].map((r) => r.payload).join(' ');
           parsed.media[index].payloads = newPayloads;
           //  console.log('after', parsed);
           let newSdp = sdpTransform.write(parsed);
           return newSdp;
         } catch (e) {
-          this.log(`error setting h264 preference: ${e}`);
+          this.log(`error setting VP9 preference: ${e}`);
         }
         return rtcSDP;
       },
