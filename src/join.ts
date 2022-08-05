@@ -110,7 +110,23 @@ function buildCallOptions(callConfig: string): DailyCallOptions {
   const defaultCallOptions = <DailyCallOptions>{
     dailyConfig: {
       avoidEval: true,
-      modifyLocalSdpHook: (index: any, rtcSDP: any) => {
+      modifyLocalSdpHook: (rtcSDP: any) => {
+        try {
+          let parsed = sdpTransform.parse(rtcSDP.sdp);
+          console.log('before', parsed);
+          let VP9 = parsed.media[0].rtp.filter((r: any) => r.codec === 'VP9');
+          let notVP9 = parsed.media[0].rtp.filter((r: any) => r.codec !== 'VP9');
+          let newPayloads = [...VP9, ...notVP9].map((r) => r.payload).join(' ');
+          parsed.media[0].payloads = newPayloads;
+          console.log('after', parsed);
+          let newSdp = sdpTransform.write(parsed);
+          return newSdp;
+        } catch (e) {
+          this.log(`error setting VP9 preference: ${e}`);
+        }
+        return rtcSDP;
+      },
+      /*odifyRemoteSdpHook: (index: any, rtcSDP: any) => {
         try {
           let parsed = sdpTransform.parse(rtcSDP.sdp);
           console.log('before', parsed);
@@ -125,23 +141,7 @@ function buildCallOptions(callConfig: string): DailyCallOptions {
           this.log(`error setting VP9 preference: ${e}`);
         }
         return rtcSDP;
-      },
-      modifyRemoteSdpHook: (index: any, rtcSDP: any) => {
-        try {
-          let parsed = sdpTransform.parse(rtcSDP.sdp);
-          console.log('before', parsed);
-          let VP9 = parsed.media[index].rtp.filter((r: any) => r.codec === 'VP9');
-          let notVP9 = parsed.media[index].rtp.filter((r: any) => r.codec !== 'VP9');
-          let newPayloads = [...VP9, ...notVP9].map((r) => r.payload).join(' ');
-          parsed.media[index].payloads = newPayloads;
-          console.log('after', parsed);
-          let newSdp = sdpTransform.write(parsed);
-          return newSdp;
-        } catch (e) {
-          this.log(`error setting VP9 preference: ${e}`);
-        }
-        return rtcSDP;
-      },
+      },*/
     },
   };
   const merged = merge(defaultCallOptions, callOptions);
