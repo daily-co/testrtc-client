@@ -109,7 +109,7 @@ function buildCallOptions(callConfig: string): DailyCallOptions {
       avoidEval: true,
       modifyRemoteSdpHook: (rtcSDP: any) => {
         let newSdp = rtcSDP.sdp.replace(
-          /m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 127 121 125 107 108 109 124 120 123 119 35 36 41 42 114 115 116/g,
+          /m=video 9 UDP\/TLS\/RTP\/SAVPF 96 97 98 99 100 101 127 121 125 107 108 109 124 120 123 119 35 36 41 42 114 115 116/g,
           'm=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 127 121 125 107 108 109 124 120 123 119 35 36 41 42 114 115 116'
         );
         console.log("new SDP:", newSdp);
