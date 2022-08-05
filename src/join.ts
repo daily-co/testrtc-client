@@ -111,8 +111,8 @@ function buildCallOptions(callConfig: string): DailyCallOptions {
         try {
           let parsed = rtcSDP.parse(rtcSDP.sdp);
           //console.log('before', parsed);
-          let vp9 = parsed.media[index].rtp.filter((r) => r.codec === 'VP9');
-          let notVP9 = parsed.media[index].rtp.filter((r) => r.codec !== 'VP9');
+          let vp9 = parsed.media[index].rtp.filter((r: any) => r.codec === 'VP9');
+          let notVP9 = parsed.media[index].rtp.filter((r: any) => r.codec !== 'VP9');
           let newPayloads = [...vp9, ...notVP9].map((r) => r.payload).join(' ');
           parsed.media[index].payloads = newPayloads;
           //console.log('after', parsed);
