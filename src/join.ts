@@ -110,14 +110,7 @@ function buildCallOptions(callConfig: string): DailyCallOptions {
       modifyRemoteSdpHook: (rtcSDP: any) => {
         let newSdp = rtcSDP.sdp.replace(
           /a=rtcp-rsize/g,
-          'a=rtcp-rsize\n
-          a=rtpmap:98 VP9/90000\n
-          a=rtcp-fb:98 goog-remb\n
-          a=rtcp-fb:98 transport-cc\n
-          a=rtcp-fb:98 ccm fir\n
-          a=rtcp-fb:98 nack\n
-          a=rtcp-fb:98 nack pli\n
-          a=fmtp:98 profile-id=0\n'
+          'a=rtcp-rsize\na=rtpmap:98 VP9/90000\na=rtcp-fb:98 goog-remb\na=rtcp-fb:98 transport-cc\na=rtcp-fb:98 ccm fir\na=rtcp-fb:98 nack\na=rtcp-fb:98 nack pli\na=fmtp:98 profile-id=0\n'
         );
         console.log("new SDP:", newSdp);
         return newSdp;
