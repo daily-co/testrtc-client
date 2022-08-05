@@ -3,7 +3,31 @@ const agentType = Number(process.env.RTC_IN_SESSION_ID);
 const agentSessionName = process.env.RTC_SESSION_NAME;
 const agentNumber = process.env.RTC_AGENT_NUM;
 const sec = 1000;
-const baseURL = "[YOUR-DEPLOYMENT-URL]";
+const baseURL = process.env.RTC_SERVICE_URL;
+
+const setBandwidthProps = {
+    kbs: "NO_CAP",
+};
+
+const setBandwidthData = JSON.stringify(setBandwidthProps);
+
+// Resolution to get from the camera. 
+const videoWidthMin =　320;
+const videoHeightMin = 180;
+const videoWidthIdeal =　1280;
+const videoHeightIdeal = 720;
+const videoWidthMax =　3840;
+const videoHeightMax = 2160;
+
+const callConfigProps = {
+    dailyConfig: {
+        userMediaVideoConstraints: {
+            width: {"min":videoWidthMin,"ideal":videoWidthIdeal,"max":videoWidthMax},
+            height: {"min":videoHeightMin,"ideal":videoHeightIdeal,"max":videoHeightMax}
+        },
+    }
+}
+const callConfigData = JSON.stringify(callConfigProps);
 
 if (agentType === 1) {
     createAndJoinRoom();
@@ -12,14 +36,13 @@ if (agentType === 1) {
 
 client
     .rtcWaitForSessionValue('roomURL', function(url) {
-        console.log("joining room", agentType, agentName, url)
         joinRoom(agentName, url);
     }, 30 * sec);
 
 
 function createAndJoinRoom(agentName) {
     setExpectations();
-    const url = baseURL;
+    const url = `${baseURL}?setBandwidth=${setBandwidthData}&callConfig=${callConfigData}`
     client
         .rtcInfo("testRTC agent start - agent: %s", agentName)
         .pause((500 * agentType) + 10)
@@ -45,7 +68,7 @@ function createAndJoinRoom(agentName) {
 
 function joinRoom(agentName, roomURL) {
     setExpectations();
-    const url = `${baseURL}?roomURL=${roomURL}`
+    const url = `${baseURL}?roomURL=${roomURL}&setBandwidth=${setBandwidthData}&callConfig=${callConfigData}`
     client
         .rtcInfo("testRTC agent start - agent: %s room: %s", agentName, roomURL)
         .pause((500 * agentType) + 10)
@@ -64,6 +87,7 @@ function joinRoom(agentName, roomURL) {
 
 function setExpectations() {
     client
+        .resizeWindow(1280, 720)
         .rtcSetTestExpectation("audio.in >= 1")
         .rtcSetTestExpectation("audio.out >= 1")
         .rtcSetTestExpectation("video.in >= 1")

@@ -1,6 +1,6 @@
 {
     "createDate": "2022-07-20T07:43:38.486Z",
-    "modifiedDate": "2022-08-02T09:12:48.480Z",
+    "modifiedDate": "2022-08-04T15:31:25.519Z",
     "isRemote": false,
     "favorites": 1,
     "_id": "62d7b22afe5a0b00155f0218",
@@ -14,22 +14,30 @@
             "location": "East-US",
             "network": "No throttling",
             "firewall": "FW_NO_FW",
-            "media": "KrankyGeek-2-1080p.mp4"
+            "media": "Salsa-720p.mp4"
+        },
+        {
+            "browser": "linux-chrome-stable",
+            "location": "East-US",
+            "network": "No throttling",
+            "firewall": "FW_NO_FW",
+            "media": "Salsa-720p.mp4"
         }
     ],
     "name": "Daily 1-1 P2P - Self-Serve",
-    "testScript": "const agentName = process.env.RTC_AGENT_NAME;\nconst agentType = Number(process.env.RTC_IN_SESSION_ID);\nconst agentSessionName = process.env.RTC_SESSION_NAME;\nconst agentNumber = process.env.RTC_AGENT_NUM;\nconst sec = 1000;\nconst baseURL = process.env.RTC_SERVICE_URL;\n\n\nif (agentType === 1) {\n    createAndJoinRoom();\n    return;\n}\n\nclient\n    .rtcWaitForSessionValue('roomURL', function(url) {\n        joinRoom(agentName, url);\n    }, 30 * sec);\n\n\nfunction createAndJoinRoom(agentName) {\n    setExpectations();\n    const url = baseURL;\n    client\n        .rtcInfo(\"testRTC agent start - agent: %s\", agentName)\n        .pause((500 * agentType) + 10)\n        .rtcProgress(\"Creating call \" + url)\n        .url(url)\n        .waitForElementVisible('#inCall', 120 * sec)\n        .rtcProgress(\"Broadcasting room URL to other agents\")\n        .getText('#inCall', function(result) {\n            // Remove whitespace\n            const roomURL = result.value.replace(/\\s+/g, '');\n            client.rtcInfo('Sending Room url %s', roomURL)\n                .rtcProgress(\"Waiting @ \" + roomURL)\n                .rtcSetSessionValue(\"roomURL\", roomURL);\n        })\n        .pause(5000)\n        .rtcProgress(\"Starting to test \" + url)\n        // Give some time to collect media stats\n        .pause(60 * sec)\n        .rtcScreenshot('mid-call')\n        .pause(60 * sec)\n        .rtcProgress(\"done!\");\n}\n\nfunction joinRoom(agentName, roomURL) {\n    setExpectations();\n    const url = `${baseURL}?roomURL=${roomURL}`\n    client\n        .rtcInfo(\"testRTC agent start - agent: %s room: %s\", agentName, roomURL)\n        .pause((500 * agentType) + 10)\n        .rtcProgress(\"Joining \" + url)\n        .url(url)\n        .waitForElementVisible('#inCall', 120 * sec)\n        .pause(5000)\n        .rtcProgress(\"In \" + url)\n\n        // Give some time to collect media stats\n        .pause(60 * sec)\n        .rtcScreenshot('mid-call')\n        .pause(60 * sec)\n        .rtcProgress(\"done!\");\n}\n\nfunction setExpectations() {\n    client\n        .rtcSetTestExpectation(\"audio.in >= 1\")\n        .rtcSetTestExpectation(\"audio.out >= 1\")\n        .rtcSetTestExpectation(\"video.in >= 1\")\n        .rtcSetTestExpectation(\"video.out >= 1\")\n        .rtcSetTestExpectation(\"audio.in.bitrate > 0\")\n        .rtcSetTestExpectation(\"audio.out.bitrate > 0\")\n        .rtcSetTestExpectation(\"video.in.bitrate > 0\")\n        .rtcSetTestExpectation(\"video.out.bitrate > 0\")\n        .rtcIgnoreErrorContains(\"AudioContext was not allowed to start\");\n}",
+    "testScript": "const agentName = process.env.RTC_AGENT_NAME;\nconst agentType = Number(process.env.RTC_IN_SESSION_ID);\nconst agentSessionName = process.env.RTC_SESSION_NAME;\nconst agentNumber = process.env.RTC_AGENT_NUM;\nconst sec = 1000;\nconst baseURL = process.env.RTC_SERVICE_URL;\n\nconst setBandwidthProps = {\n    kbs: \"NO_CAP\",\n};\n\nconst setBandwidthData = JSON.stringify(setBandwidthProps);\n\n// Resolution to get from the camera. \nconst videoWidthMin =　320;\nconst videoHeightMin = 180;\nconst videoWidthIdeal =　1280;\nconst videoHeightIdeal = 720;\nconst videoWidthMax =　3840;\nconst videoHeightMax = 2160;\n\nconst callConfigProps = {\n    dailyConfig: {\n        userMediaVideoConstraints: {\n            width: {\"min\":videoWidthMin,\"ideal\":videoWidthIdeal,\"max\":videoWidthMax},\n            height: {\"min\":videoHeightMin,\"ideal\":videoHeightIdeal,\"max\":videoHeightMax}\n        },\n    }\n}\nconst callConfigData = JSON.stringify(callConfigProps);\n\nif (agentType === 1) {\n    createAndJoinRoom();\n    return;\n}\n\nclient\n    .rtcWaitForSessionValue('roomURL', function(url) {\n        joinRoom(agentName, url);\n    }, 30 * sec);\n\n\nfunction createAndJoinRoom(agentName) {\n    setExpectations();\n    const url = `${baseURL}?setBandwidth=${setBandwidthData}&callConfig=${callConfigData}`\n    client\n        .rtcInfo(\"testRTC agent start - agent: %s\", agentName)\n        .pause((500 * agentType) + 10)\n        .rtcProgress(\"Creating call \" + url)\n        .url(url)\n        .waitForElementVisible('#inCall', 120 * sec)\n        .rtcProgress(\"Broadcasting room URL to other agents\")\n        .getText('#inCall', function(result) {\n            // Remove whitespace\n            const roomURL = result.value.replace(/\\s+/g, '');\n            client.rtcInfo('Sending Room url %s', roomURL)\n                .rtcProgress(\"Waiting @ \" + roomURL)\n                .rtcSetSessionValue(\"roomURL\", roomURL);\n        })\n        .pause(5000)\n        .rtcProgress(\"Starting to test \" + url)\n        // Give some time to collect media stats\n        .pause(60 * sec)\n        .rtcScreenshot('mid-call')\n        .pause(60 * sec)\n        .rtcProgress(\"done!\");\n}\n\nfunction joinRoom(agentName, roomURL) {\n    setExpectations();\n    const url = `${baseURL}?roomURL=${roomURL}&setBandwidth=${setBandwidthData}&callConfig=${callConfigData}`\n    client\n        .rtcInfo(\"testRTC agent start - agent: %s room: %s\", agentName, roomURL)\n        .pause((500 * agentType) + 10)\n        .rtcProgress(\"Joining \" + url)\n        .url(url)\n        .waitForElementVisible('#inCall', 120 * sec)\n        .pause(5000)\n        .rtcProgress(\"In \" + url)\n\n        // Give some time to collect media stats\n        .pause(60 * sec)\n        .rtcScreenshot('mid-call')\n        .pause(60 * sec)\n        .rtcProgress(\"done!\");\n}\n\nfunction setExpectations() {\n    client\n        .resizeWindow(1280, 720)\n        .rtcSetTestExpectation(\"audio.in >= 1\")\n        .rtcSetTestExpectation(\"audio.out >= 1\")\n        .rtcSetTestExpectation(\"video.in >= 1\")\n        .rtcSetTestExpectation(\"video.out >= 1\")\n        .rtcSetTestExpectation(\"audio.in.bitrate > 0\")\n        .rtcSetTestExpectation(\"audio.out.bitrate > 0\")\n        .rtcSetTestExpectation(\"video.in.bitrate > 0\")\n        .rtcSetTestExpectation(\"video.out.bitrate > 0\")\n        .rtcIgnoreErrorContains(\"AudioContext was not allowed to start\");\n}",
     "webhook": "",
     "def_sort": "daily 1-1 p2p - self-serve",
     "project": "62a34676d012d90013b90582",
     "__v": 0,
-    "lastRunDate": "2022-07-20T19:18:38.490Z",
+    "lastRunDate": "2022-08-04T15:31:25.511Z",
     "lastRunStatus": "completed",
-    "runCount": 5,
+    "runCount": 16,
     "info": "Tests having two sessions join a Daily Prebuilt P2P call using a self-serve deployment of Daily TestRTC Client",
     "lastRank": null,
     "lastRankDelta": null,
     "stared": false,
-    "serviceUrl": "https://daily-testrtc.netlify.app/",
+    "serviceUrl": "[YOUR-DEPLOYMENT-URL]",
+    "runOptions": "#getstats",
     "numberOfSessions": 1
 }
