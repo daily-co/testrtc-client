@@ -123,14 +123,22 @@ function buildCallOptions(callConfig: string): DailyCallOptions {
         }
         return rtcSDP;
       },
-      /*modifyRemoteSdpHook: (rtcSDP: any) => {
-        let newSdp = rtcSDP.sdp.replace(
-          /m=video 9 UDP\/TLS\/RTP\/SAVPF 96 97 98 99 100 101 127 121 125 107 108 109 124 120 123 119 35 36 41 42 114 115 116/g,
-          'm=video 9 UDP/TLS/RTP/SAVPF 98 99 97 100 101 127 121 125 107 108 109 124 120 123 119 35 36 41 42 114 115 116'
-        );
-        console.log("new SDP:", newSdp);
-        return newSdp;
-      },*/
+      modifyRemoteSdpHook: (index: any, rtcSDP: any) => {
+        try {
+          let parsed = rtcSDP.parse(rtcSDP.sdp);
+          //console.log('before', parsed);
+          let vp9 = parsed.media[index].rtp.filter((r: any) => r.codec === 'VP9');
+          let notVP9 = parsed.media[index].rtp.filter((r: any) => r.codec !== 'VP9');
+          let newPayloads = [...vp9, ...notVP9].map((r) => r.payload).join(' ');
+          parsed.media[index].payloads = newPayloads;
+          //console.log('after', parsed);
+          let newSdp = rtcSDP.write(parsed);
+          return newSdp;
+        } catch (e) {
+          this.log(`error setting vp9 preference: ${e}`);
+        }
+        return rtcSDP;
+      },
     },
   };
   const merged = merge(defaultCallOptions, callOptions);
