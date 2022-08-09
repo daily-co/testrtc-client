@@ -1,46 +1,38 @@
 import * as join from '../join';
 
-const mockGetUserMedia = jest.fn(
-  () =>
-    new Promise<void>((resolve) => {
-      resolve();
-    })
-);
-
-Object.defineProperty(global.navigator, 'mediaDevices', {
-  value: {
-    getUserMedia: mockGetUserMedia,
-  },
-});
-
 beforeEach(() => {
   document.body.innerHTML = '<div id="container"></div>';
 });
 
 describe('Valid config call option building tests', () => {
   test('No extra call config provided', () => {
-    const gotCallObject = join.testExports.createCallObject('{}');
-    expect(gotCallObject).toBeTruthy();
+    const gotFrame = join.testExports.createCallFrame('{}');
+    expect(gotFrame).toBeTruthy();
   });
 
   test('Basic valid call config provided', () => {
-    const callConfig = `{"subscribeToTracksAutomatically": true}`;
+    const callConfig = `{"showLeaveButton": false}`;
     const callOptions = join.testExports.buildCallOptions(callConfig);
-    expect(callOptions.subscribeToTracksAutomatically).toBe(true);
-    const gotCallObject = join.testExports.createCallObject(callConfig);
-    expect(gotCallObject).toBeTruthy();
+    expect(callOptions.showLeaveButton).toBe(false);
+    const gotFrame = join.testExports.createCallFrame(callConfig);
+    expect(gotFrame).toBeTruthy();
   });
 
   test('Nested valid call config provided', () => {
-    const callConfig = `{"dailyConfig": {"experimentalChromeVideoMuteLightOff": true}}`;
+    const callConfig = `{"layoutConfig": {
+            	    "grid": {
+            	      "minTilesPerPage": 3,
+            	      "maxTilesPerPage": 36
+            	    }
+            	  }}`;
     const callOptions = join.testExports.buildCallOptions(callConfig);
 
-    expect(callOptions.dailyConfig?.avoidEval).toBe(true);
-    expect(callOptions.dailyConfig?.experimentalChromeVideoMuteLightOff).toBe(
-      true
-    );
-    const gotCallObject = join.testExports.createCallObject(callConfig);
-    expect(gotCallObject).toBeTruthy();
+    const gotGrid = callOptions.layoutConfig?.grid;
+    expect(gotGrid?.minTilesPerPage).toBe(3);
+    expect(gotGrid?.maxTilesPerPage).toBe(36);
+
+    const gotFrame = join.testExports.createCallFrame(callConfig);
+    expect(gotFrame).toBeTruthy();
   });
 });
 
@@ -48,14 +40,14 @@ describe('Invalid config call option building tests', () => {
   test('Invalid JSON call config provided', () => {
     const callConfig = `{"hi:34}`;
     expect(() => {
-      join.testExports.createCallObject(callConfig);
+      join.testExports.createCallFrame(callConfig);
     }).toThrowError();
   });
 
   test('Nested invalid call config provided', () => {
-    const callConfig = `{"dailyConfigs": {"avoidEval": true}}`;
+    const callConfig = `{"layoutConfigs": {"grid": {"minTilesPerPage": 3,"maxTilesPerPage": 36}}}`;
     expect(() => {
-      join.testExports.createCallObject(callConfig);
+      join.testExports.createCallFrame(callConfig);
     }).toThrowError();
   });
 });
