@@ -1,4 +1,5 @@
 import DailyIframe, { DailyCall, DailyCallOptions } from '@daily-co/daily-js';
+import merge from 'lodash.merge';
 
 function getContainer(): HTMLDivElement {
   return <HTMLDivElement>document.getElementById('container');
@@ -52,8 +53,8 @@ function buildCallOptions(callConfig: string): DailyCallOptions {
       height: 'calc(100% - 5rem)',
     },
   };
-
-  return { ...defaultCallOptions, ...callOptions };
+  const merged = merge(defaultCallOptions, callOptions);
+  return merged;
 }
 
 function createCallFrame(callConfig: string): DailyCall {
