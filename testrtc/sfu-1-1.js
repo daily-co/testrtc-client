@@ -122,7 +122,6 @@ function joinRoom(agentName, roomURL) {
 
     const url = `${baseURL}?roomURL=${roomURL}&callConfig=${callConfigData}&setBandwidth=${setBandwidthData}`
     client
-        //.resizeWindow(1280, 720)
         .rtcInfo("testRTC agent start - agent: %s room: %s", agentName, roomURL)
         .pause((500 * agentType) + 10)
         .rtcProgress("Joining " + url)
@@ -133,9 +132,9 @@ function joinRoom(agentName, roomURL) {
 
         // Give some time to collect media stats
         .pause(60 * sec)
-        .rtcScreenshot('mid-call')
+        .rtcScreenshot('Mid-call')
         .pause(60 * sec)
-        .rtcProgress("done!");
+        .rtcProgress("Done!");
 }
 
 function setExpectations() {
