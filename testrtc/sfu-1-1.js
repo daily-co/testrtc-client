@@ -10,16 +10,22 @@ const videoWidthIdeal = 1280;
 const videoHeightIdeal = 720;
 const videoWidthMax = 3840;
 const videoHeightMax = 2160;
-const videoWidthExact = 1920;
-const videoHeightExact = 1080;
 
+// SFU mode only
+const maxScale = 1;
+const maxFramerate = 30;
+const maxBitrate = 1700 * 1000;
+const midScale = 2;
+const midFramerate = 15;
+const midBitrate = 200 * 1000;
+const minScale = 4;
+const minFramerate = 10;
+const minBitrate = 80 * 1000;
 // In SFU mode, this limits above layers. In P2P mode, this is the bandwidth cap
 const setBandwidth = "NO_CAP";
 // When to switch to SFU mode
-const sfuSwitchover = 4;
+const sfuSwitchover = 0.5;
 
-// VP8 is Dailys default codec. We also support h264 in P2P and SFU mode and VP9 in P2P mode.
-const codec = "VP8"
 
 const roomProps = {
     sfu_switchover: sfuSwitchover,
@@ -31,6 +37,23 @@ const setBandwidthProps = {
 
 const callConfigProps = {
     dailyConfig: {
+        camSimulcastEncodings: [{
+                maxBitrate: minBitrate,
+                scaleResolutionDownBy: minScale,
+                maxFramerate: minFramerate
+            },
+            {
+                maxBitrate: midBitrate,
+                scaleResolutionDownBy: midScale,
+                maxFramerate: midFramerate
+            },
+
+            {
+                maxBitrate: maxBitrate,
+                scaleResolutionDownBy: maxScale,
+                maxFramerate: maxFramerate
+            }
+        ],
         userMediaVideoConstraints: {
             width: {
                 "min": videoWidthMin,
@@ -51,7 +74,6 @@ const callConfigProps = {
     }
 }
 
-
 const roomPropsData = JSON.stringify(roomProps);
 const callConfigData = JSON.stringify(callConfigProps);
 const setBandwidthData = JSON.stringify(setBandwidthProps);
@@ -62,7 +84,7 @@ if (agentType === 1) {
     return;
 }
 
-// Waits for agent 1 to provide a room url
+// Waits for agent 1 to provide a room URL
 client
     .rtcWaitForSessionValue('roomURL', function(url) {
         joinRoom(agentName, url);
@@ -71,7 +93,7 @@ client
 
 function createAndJoinRoom(agentName) {
     setExpectations();
-    const url = `${baseURL}?roomParams=${roomPropsData}&callConfig=${callConfigData}&setBandwidth=${setBandwidthData}&codec=${codec}`;
+    const url = `${baseURL}?roomParams=${roomPropsData}&callConfig=${callConfigData}&setBandwidth=${setBandwidthData}`;
     client
         .rtcInfo("testRTC agent start - agent: %s", agentName)
         .pause((500 * agentType) + 10)
@@ -97,8 +119,10 @@ function createAndJoinRoom(agentName) {
 
 function joinRoom(agentName, roomURL) {
     setExpectations();
-    const url = `${baseURL}?roomURL=${roomURL}&callConfig=${callConfigData}&setBandwidth=${setBandwidthData}&codec=${codec}`
+
+    const url = `${baseURL}?roomURL=${roomURL}&callConfig=${callConfigData}&setBandwidth=${setBandwidthData}`
     client
+        //.resizeWindow(1280, 720)
         .rtcInfo("testRTC agent start - agent: %s room: %s", agentName, roomURL)
         .pause((500 * agentType) + 10)
         .rtcProgress("Joining " + url)
@@ -109,9 +133,9 @@ function joinRoom(agentName, roomURL) {
 
         // Give some time to collect media stats
         .pause(60 * sec)
-        .rtcScreenshot('Mid-call')
+        .rtcScreenshot('mid-call')
         .pause(60 * sec)
-        .rtcProgress("Done!");
+        .rtcProgress("done!");
 }
 
 function setExpectations() {
