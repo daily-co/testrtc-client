@@ -16,7 +16,10 @@ You will need a Daily API key. To get one, sign up for a free [Daily account](ht
 
 ### Using our prebuilt TestRTC scripts
 
-You can import the JSON files from the `testrtc` directory into your TestRTC account. Replace the Service URL with the address of your Netlify deployment.
+You can import the JSON files from the `testrtc` directory into your TestRTC account. Replace the Service URL with the address of your Netlify deployment. This can be done by two methods:
+
+* Clicking the `Import` button in your TestRTC test dashboard and navigating to the relevant test JSON file.
+* Using the [`@testrtc/scripts-import-export`](https://www.npmjs.com/package/@testrtc/scripts-import-export) package with your TestRTC API key.
 
 Check out [TestRTC's testing documentation](https://testrtc.com/article-categories/testingrtc/) for more information on using TestRTC.
 
