@@ -7,10 +7,8 @@ import DailyIframe, {
   DailyEventObjectParticipants,
   DailyParticipant,
 } from '@daily-co/daily-js';
-
 import merge from 'lodash.merge';
-
-const sdpTransform = require('sdp-transform');
+import * as sdpTransform from 'sdp-transform';
 
 // No chance of idx out of range exception here, as it
 // will not transpile if we index into a nonexistent pos
@@ -143,7 +141,7 @@ function getModifySdpHook(wantedCodec: string): ((rtcSDP: any) => any) | null {
       const newSdp = sdpTransform.write(parsed);
       return newSdp;
     } catch (e) {
-      console.error(`error setting codec preference: ${e}`);
+      console.error(`failed to set codec preference: ${e}`);
     }
     return rtcSDP;
   };
