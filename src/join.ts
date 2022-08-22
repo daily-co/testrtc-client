@@ -7,7 +7,10 @@ import DailyIframe, {
   DailyEventObjectParticipants,
   DailyParticipant,
 } from '@daily-co/daily-js';
+
 import merge from 'lodash.merge';
+
+const sdpTransform = require('sdp-transform');
 
 // No chance of idx out of range exception here, as it
 // will not transpile if we index into a nonexistent pos
@@ -99,24 +102,81 @@ function parseCallConfig(callConfig: string): DailyCallOptions {
   }
 }
 
+// getModifySdpHook takes a desired codec and returns the given hook to pass
+// to Daily to prefer that codec.
+function getModifySdpHook(wantedCodec: string): ((rtcSDP: any) => any) | null {
+  if (wantedCodec === '') {
+    return null;
+  }
+  const valid = ['VP8', 'VP9', 'H264'];
+  const codecName = wantedCodec.toUpperCase();
+  let found = false;
+  for (let i = 0; i < valid.length; i += 1) {
+    const c = valid[i];
+    if (c === codecName) {
+      found = true;
+      break;
+    }
+  }
+  if (!found) {
+    throw new Error(
+      `invalid codec name supplied: ${wantedCodec}; valid options are: ${valid.join(
+        ' '
+      )}`
+    );
+  }
+  const hook = (rtcSDP: any) => {
+    try {
+      const camIdx = 0;
+      const parsed = sdpTransform.parse(rtcSDP.sdp);
+      const camMedia = parsed.media[camIdx];
+      const preferredCodec = camMedia.rtp.filter(
+        (r: any) => r.codec === codecName
+      );
+      const notPreferredCodec = camMedia.rtp.filter(
+        (r: any) => r.codec !== codecName
+      );
+      const newPayloads = [...preferredCodec, ...notPreferredCodec]
+        .map((r) => r.payload)
+        .join(' ');
+      parsed.media[camIdx].payloads = newPayloads;
+      const newSdp = sdpTransform.write(parsed);
+      return newSdp;
+    } catch (e) {
+      console.error(`error setting codec preference: ${e}`);
+    }
+    return rtcSDP;
+  };
+  return hook;
+}
+
 // buildCallOptions takes a call config JSON string
 // and returns an associated instance of DailyCallOptions
-function buildCallOptions(callConfig: string): DailyCallOptions {
+function buildCallOptions(
+  callConfig: string,
+  preferredCodec: string = ''
+): DailyCallOptions {
   const callOptions = parseCallConfig(callConfig);
+  const hook = getModifySdpHook(preferredCodec);
 
   const defaultCallOptions = <DailyCallOptions>{
     dailyConfig: {
       avoidEval: true,
+      modifyLocalSdpHook: hook,
     },
   };
+
   const merged = merge(defaultCallOptions, callOptions);
   return merged;
 }
 
 // createCallObject creates a Daily call object with the given
 // configuration and returns it in the form of a DailyCall
-function createCallObject(callConfig: string): DailyCall {
-  const callOptions = buildCallOptions(callConfig);
+function createCallObject(
+  callConfig: string,
+  wantedCodec: string = ''
+): DailyCall {
+  const callOptions = buildCallOptions(callConfig, wantedCodec);
   const co = DailyIframe.createCallObject(callOptions);
   return co;
 }
@@ -145,9 +205,10 @@ function getBandwidth(bandwidthConfig: string): Bandwidth {
 export function joinCall(
   roomURL: string,
   callConfig: string = '{}',
-  bandwidthConfig: string = ''
+  bandwidthConfig: string = '',
+  wantedCodec: string = ''
 ) {
-  const call = createCallObject(callConfig);
+  const call = createCallObject(callConfig, wantedCodec);
   // Set up a couple of handlers to make it simpler to detect
   // when we're in from TestRTC
   call
