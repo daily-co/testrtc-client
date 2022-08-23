@@ -108,15 +108,7 @@ function getModifySdpHook(wantedCodec: string): ((rtcSDP: any) => any) | null {
   }
   const valid = ['VP8', 'VP9', 'H264'];
   const codecName = wantedCodec.toUpperCase();
-  let found = false;
-  for (let i = 0; i < valid.length; i += 1) {
-    const c = valid[i];
-    if (c === codecName) {
-      found = true;
-      break;
-    }
-  }
-  if (!found) {
+  if (!valid.includes(codecName)) {
     throw new Error(
       `invalid codec name supplied: ${wantedCodec}; valid options are: ${valid.join(
         ' '
@@ -274,5 +266,11 @@ export const testExports = {
       throw new Error(errMsgNotPermitted);
     }
     return createCallObject(callOptions);
+  },
+  getModifySdpHook: (wantedCodec: string): ((rtcSDP: any) => any) | null => {
+    if (process.env.NODE_ENV !== 'test') {
+      throw new Error(errMsgNotPermitted);
+    }
+    return getModifySdpHook(wantedCodec);
   },
 };

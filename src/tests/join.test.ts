@@ -90,3 +90,24 @@ describe('setBandwidth tests', () => {
     }).toThrowError();
   });
 });
+
+describe('getModifySdpHook tests', () => {
+  test('valid codecs', () => {
+    const codecs = ['vp9', 'VP9', 'vp8', 'VP8', 'H264', 'h264'];
+    for (let i = 0; i < codecs.length; i += 1) {
+      const c = codecs[i];
+      const gotHook = join.testExports.getModifySdpHook(c);
+      expect(gotHook).toBeTruthy();
+    }
+  });
+
+  test('invalid codecs', () => {
+    const codecs = ['someCodec'];
+    for (let i = 0; i < codecs.length; i += 1) {
+      const c = codecs[i];
+      expect(() => {
+        join.testExports.getModifySdpHook(c);
+      }).toThrow();
+    }
+  });
+});
