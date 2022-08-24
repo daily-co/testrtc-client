@@ -24,6 +24,7 @@
   "devDependencies": {
     "@types/jest": "^28.1.6",
     "@types/lodash.merge": "^4.6.7",
+    "@types/sdp-transform": "^2.4.5",
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
     "eslint": "^8.17.0",
@@ -46,6 +47,7 @@
   },
   "dependencies": {
     "@daily-co/daily-js": "^0.28.0",
-    "lodash.merge": "^4.6.2"
+    "lodash.merge": "^4.6.2",
+    "sdp-transform": "^2.14.1"
   }
 }
