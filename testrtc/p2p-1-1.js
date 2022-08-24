@@ -18,7 +18,7 @@ const setBandwidth = "NO_CAP";
 // When to switch to SFU mode
 const sfuSwitchover = 4;
 
-// VP8 is Dailys default codec. We also support h264 in P2P and SFU mode and VP9 in P2P mode.
+// VP8 is Daily's default codec. We also support H264 in P2P and SFU mode and VP9 in P2P mode.
 const codec = "VP8"
 
 const roomProps = {
@@ -51,7 +51,6 @@ const callConfigProps = {
     }
 }
 
-
 const roomPropsData = JSON.stringify(roomProps);
 const callConfigData = JSON.stringify(callConfigProps);
 const setBandwidthData = JSON.stringify(setBandwidthProps);
@@ -71,7 +70,13 @@ client
 
 function createAndJoinRoom(agentName) {
     setExpectations();
-    const url = `${baseURL}?roomParams=${roomPropsData}&callConfig=${callConfigData}&setBandwidth=${setBandwidthData}&codec=${codec}`;
+    const clientURL = new URL(baseURL);
+    const params = clientURL.searchParams;
+    params.append("roomParams", roomPropsData);
+    params.append("callConfig", callConfigData);
+    params.append("setBandwidth", setBandwidthData);
+    params.append("codec", codec);
+    const url = clientURL.toString();
     client
         .rtcInfo("testRTC agent start - agent: %s", agentName)
         .pause((500 * agentType) + 10)
@@ -97,7 +102,13 @@ function createAndJoinRoom(agentName) {
 
 function joinRoom(agentName, roomURL) {
     setExpectations();
-    const url = `${baseURL}?roomURL=${roomURL}&callConfig=${callConfigData}&setBandwidth=${setBandwidthData}&codec=${codec}`
+    const clientURL = new URL(baseURL);
+    const params = clientURL.searchParams;
+    params.append("roomURL", roomURL);
+    params.append("callConfig", callConfigData);
+    params.append("setBandwidth", setBandwidthData);
+    params.append("codec", codec);
+    const url = clientURL.toString();
     client
         .rtcInfo("testRTC agent start - agent: %s room: %s", agentName, roomURL)
         .pause((500 * agentType) + 10)

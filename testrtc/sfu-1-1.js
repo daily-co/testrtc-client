@@ -26,7 +26,6 @@ const setBandwidth = "NO_CAP";
 // When to switch to SFU mode
 const sfuSwitchover = 0.5;
 
-
 const roomProps = {
     sfu_switchover: sfuSwitchover,
 };
@@ -93,7 +92,13 @@ client
 
 function createAndJoinRoom(agentName) {
     setExpectations();
-    const url = `${baseURL}?roomParams=${roomPropsData}&callConfig=${callConfigData}&setBandwidth=${setBandwidthData}`;
+    const clientURL = new URL(baseURL);
+    const params = clientURL.searchParams;
+    params.append("roomParams", roomPropsData);
+    params.append("callConfig", callConfigData);
+    params.append("setBandwidth", setBandwidthData);
+    const url = clientURL.toString();
+
     client
         .rtcInfo("testRTC agent start - agent: %s", agentName)
         .pause((500 * agentType) + 10)
@@ -120,7 +125,13 @@ function createAndJoinRoom(agentName) {
 function joinRoom(agentName, roomURL) {
     setExpectations();
 
-    const url = `${baseURL}?roomURL=${roomURL}&callConfig=${callConfigData}&setBandwidth=${setBandwidthData}`
+    const clientURL = new URL(baseURL);
+    const params = clientURL.searchParams;
+    params.append("roomURL", roomURL);
+    params.append("callConfig", callConfigData);
+    params.append("setBandwidth", setBandwidthData);
+    const url = clientURL.toString();
+
     client
         .rtcInfo("testRTC agent start - agent: %s room: %s", agentName, roomURL)
         .pause((500 * agentType) + 10)
