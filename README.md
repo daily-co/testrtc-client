@@ -16,7 +16,10 @@ You will need a Daily API key. To get one, sign up for a free [Daily account](ht
 
 ### Using our prebuilt TestRTC scripts
 
-You can copy the scripts from the `testrtc` directory into your TestRTC account. Replace `"[YOUR-DEPLOYMENT-URL]"` with the address of your Netlify deployment.
+You can import the JSON files from the `testrtc` directory into your TestRTC account. Replace the Service URL with the address of your Netlify deployment. This can be done by two methods:
+
+* Clicking the `Import` button in your TestRTC test dashboard and navigating to the relevant test JSON file.
+* Using the [`@testrtc/scripts-import-export`](https://www.npmjs.com/package/@testrtc/scripts-import-export) package with your TestRTC API key.
 
 Check out [TestRTC's testing documentation](https://testrtc.com/article-categories/testingrtc/) for more information on using TestRTC.
 
@@ -35,9 +38,11 @@ Currently, local runs are supported on OS X and Linux (including WSL).
 
 The test client allows callers to specify their own room creation and call configuration options as query prameters. You can use these if you'd like to modify our bundled tests or write your own:
 
-* `roomParams`: JSON string matching Daily's [room configuration properties](https://docs.daily.co/reference/rest-api/rooms/config)
 * `callOptions`: JSON string matching Daily's [call object configuration properties](https://docs.daily.co/reference/daily-js/factory-methods/create-call-object)
+* `roomParams`: JSON string matching Daily's [room configuration properties](https://docs.daily.co/reference/rest-api/rooms/config)
 * `roomURL`: A string containing the full URL to a Daily room for TestRTC agents to join.
+* `setBandwidth`: A JSON string matching the expected parameter taken by Daily's [`setBandwidth()`](https://docs.daily.co/reference/daily-js/instance-methods/set-bandwidth#main) API method. If provided, the client will call `setBandwidth()` once the call is joined.
+* `codec`: Either `"VP8"`, `"VP9"`, or `"H264"`. Which video codec to set as preferred, with the default being VP8.
 
 ### Example
 
@@ -49,5 +54,6 @@ https://your-deployment.netlifyapp.com/?roomParams={"geo":"ap-southeast-2"}
 
 ## Contributing and feedback
 
-Please run `npm run fix` to run eslint and prettier.
-This will format and auto-fix what it can, outputting any remaining issues you need to handle manually to the console.
+Please run `npm run fix` to run eslint and prettier. This will format and auto-fix what it can, outputting any remaining issues you need to handle manually to the console.
+
+Ensure all tests pass with `npm run test`.
