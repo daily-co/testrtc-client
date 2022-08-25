@@ -1,3 +1,17 @@
+/*
+    This Test has two browsers join directly peer to peer, using Call Object. The testRTC Client uses your self-serve deployment "Service URL"
+    
+    Scenario
+    * browser 1 goes to the Service URL and creates a random room
+    * browser 1 sends room URL to browser 2
+    * browser 2 joins the room when it gets the room URL
+    
+    The test runs for XX seconds
+    
+    The codecs are: VP8 for video and Opus for audio
+    There are no bandwidth cap, but you can setBandwidth in kilobits per second
+
+*/
 const agentName = process.env.RTC_AGENT_NAME;
 const agentType = Number(process.env.RTC_IN_SESSION_ID);
 const sec = 1000;
