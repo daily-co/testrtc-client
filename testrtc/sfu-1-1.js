@@ -1,3 +1,22 @@
+/*
+    This Test has two browsers join via an SFU. The app uses the Daily Call Object. 
+    The testRTC Client uses your self-serve deployment "Service URL"
+    
+    Scenario
+    * browser 1 goes to the Service URL and creates a random room
+    * browser 1 sends room URL to browser 2
+    * browser 2 joins the room when it gets the room URL
+    
+    The test runs for XX seconds
+    
+    The codecs are: VP8 for video and Opus for audio
+    This test also uses a 3-layer simulcast, i.e., the video source is encoded at 
+    three different quality levels and sent over the wire. The receiving browser 
+    subscribes to the quality most approrpriate to it based on available bandwidth
+    
+    There are no bandwidth cap, but you can setBandwidth in kilobits per second
+*/
+
 const agentName = process.env.RTC_AGENT_NAME;
 const agentType = Number(process.env.RTC_IN_SESSION_ID);
 const sec = 1000;
