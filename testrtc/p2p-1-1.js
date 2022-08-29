@@ -1,17 +1,29 @@
-/*
-    This Test has two browsers join directly peer to peer, using Call Object. The testRTC Client uses your self-serve deployment "Service URL"
-    
-    Scenario
-    * browser 1 goes to the Service URL and creates a random room
-    * browser 1 sends room URL to browser 2
-    * browser 2 joins the room when it gets the room URL
-    
-    The test runs for XX seconds
-    
-    The codecs are: VP8 for video and Opus for audio
-    There are no bandwidth cap, but you can setBandwidth in kilobits per second
+/* 
+    This test has two sessions join a Daily call in Peer-to-Peer (P2P) mode.
 
+    The test utilizes a custom Daily client in call object mode. 
+    It creates a short-lived Daily room, which will by default remain in P2P
+    mode. 
+
+    SCENARIO:
+
+    * Agent 1 creates and joins a short lived Daily room
+    * Agent 2 joins the same room and waits for 5 seconds
+    * Both agents stay in the call for a further 2 minutes,
+    capturing a screenshot in the middle.
+
+    THINGS TO PLAY WITH:
+
+    Feel free to play with the constants below to set:
+
+    * Video resolution to get from the camera
+    * Framerate and bitrate limits
+    * Bandwidth cap
+    * Codec (VP8, VP9, or H264)
+
+    See https://docs.daily.co for more information about call and room properties.
 */
+
 const agentName = process.env.RTC_AGENT_NAME;
 const agentType = Number(process.env.RTC_IN_SESSION_ID);
 const sec = 1000;
