@@ -1,9 +1,10 @@
 /* 
     This test runs with two sessions joining a Daily call in SFU mode.
 
-    The test utilizes a custom Daily client in call object mode. 
-    It creates a short-lived Daily room and sets the SFU switchover threshold 
-    to 0.5, which ensures that the call switches to SFU mode immediately when 
+    The test utilizes Daily's Client SDK with a call object instance 
+    to manage video and audio tracks. It creates a short-lived 
+    Daily room and sets the SFU switchover threshold to 0.5, which 
+    ensures that the call switches to SFU mode immediately when 
     the first user joins.
 
     SCENARIO:
