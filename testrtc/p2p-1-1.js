@@ -1,5 +1,5 @@
 /* 
-    This test has two sessions join a Daily call in Peer-to-Peer (P2P) mode.
+    This test runs with two sessions joining a Daily call in Peer-to-Peer (P2P) mode.
 
     The test utilizes a custom Daily client in call object mode. 
     It creates a short-lived Daily room, which will by default remain in P2P
