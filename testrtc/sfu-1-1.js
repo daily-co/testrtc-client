@@ -1,3 +1,31 @@
+/* 
+    This test runs with two sessions joining a Daily call in SFU mode.
+
+    The test utilizes Daily's Client SDK with a call object instance 
+    to manage video and audio tracks. It creates a short-lived 
+    Daily room and sets the SFU switchover threshold to 0.5, which 
+    ensures that the call switches to SFU mode immediately when 
+    the first user joins.
+
+    SCENARIO:
+
+    * Agent 1 creates and joins a short lived Daily room
+    * Agent 2 joins the same room and waits for 5 seconds
+    * Both agents stay in the call for a further 2 minutes,
+    capturing a screenshot in the middle.
+
+    THINGS TO PLAY WITH:
+
+    Feel free to play with the constants below to set:
+
+    * Video resolution to get from the camera
+    * Framerate and bitrate limits
+    * Bandwidth cap
+    * Codec (VP8, VP9, or H264)
+
+    See https://docs.daily.co for more information about call and room properties.
+*/
+
 const agentName = process.env.RTC_AGENT_NAME;
 const agentType = Number(process.env.RTC_IN_SESSION_ID);
 const sec = 1000;
